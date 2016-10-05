@@ -12,5 +12,5 @@ public interface ISlowDownMoving {
      * Move object to provided coordinate with slowing down (negative acceleration)
      * @param dest target point
      */
-    void slowDownMoveTo(Point2D dest);
+    void slowDownMoveTo(Point2D.Double dest);
 }

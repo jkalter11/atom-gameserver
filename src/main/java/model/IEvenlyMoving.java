@@ -12,5 +12,5 @@ public interface IEvenlyMoving {
      * Move object to provided coordinate with constant velocity
      * @param dest target point
      */
-    void evenlyMoveTo(Point2D dest);
+    void evenlyMoveTo(Point2D.Double dest);
 }

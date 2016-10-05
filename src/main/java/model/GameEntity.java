@@ -2,8 +2,6 @@ package model;
 
 import java.awt.geom.Point2D;
 import java.awt.Color;
-import java.util.List;
-import java.util.Collections;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +17,7 @@ public abstract class GameEntity {
     @NotNull
     private Color color;
     @NotNull
-    private Point2D centerCoordinate;
+    private Point2D.Double centerCoordinate;
     @NotNull
     private GameField gameField;
     private static Logger log = LogManager.getLogger(GameEntity.class);
@@ -32,7 +30,7 @@ public abstract class GameEntity {
      */
     public GameEntity(double radius,
                       @NotNull Color color,
-                      @NotNull Point2D centerCoordinate,
+                      @NotNull Point2D.Double centerCoordinate,
                       @NotNull GameField gameField) {
         this.radius=radius;
         this.color=color;
@@ -54,7 +52,7 @@ public abstract class GameEntity {
     }
 
     @NotNull
-    public Point2D getCenterCoordinate() {
+    public Point2D.Double getCenterCoordinate() {
         return centerCoordinate;
     }
 
@@ -68,17 +66,11 @@ public abstract class GameEntity {
     }
 
     /**
-     * Method defines logic of interaction between two entities
-     * @param entity entity which interact
-     */
-    public abstract void interact(@NotNull GameEntity entity);
-
-    /**
      * Sets up new center coordinate.
      * If new coordinate is not inside game field, does nothing
      * @param centerCoordinate new center coordinate
      */
-    protected void setCenterCoordinate(@NotNull Point2D centerCoordinate) {
+    protected void setCenterCoordinate(@NotNull Point2D.Double centerCoordinate) {
         boolean rightOfLeftBorder = centerCoordinate.getX()>=radius;
         boolean lowerOfTopBorder = centerCoordinate.getY()<=GameField.SIZE_Y-radius;
         boolean leftOfRightBorder = centerCoordinate.getX()<GameField.SIZE_X-radius;
@@ -90,25 +82,21 @@ public abstract class GameEntity {
     /**
      * @return minimal radius for entity
      */
-    protected abstract double getMinRadius();
+    public abstract double getMinRadius();
+
+    /**
+     * @return maximal radius for entity
+     */
+    public abstract double getMaxRadius();
 
     /**
      * Sets up new radius.
-     * If new radius less than minimal radius for entity, does nothing
+     * If new radius less than minimal radius for entity or greater then maximal, does nothing
      * @param radius new radius
      */
     protected void setRadius(double radius) {
-        if (radius>=getMinRadius())
+        if (radius>=getMinRadius() && radius<=getMaxRadius())
             this.radius=radius;
-    }
-
-    /**
-     * Method searches game entities which collides with this entity or covered by it
-     * @return list of found entities
-     */
-    public List<GameEntity> findCollided() {
-        //TODO: implement search of objects, which collides with this or covered by this
-        return Collections.EMPTY_LIST;
     }
 
     /**
