@@ -62,9 +62,15 @@ public class GameField {
      * @param radius radius of entity
      * @return coordinate on field
      */
+    @NotNull
     private Point2D.Double genCenterCoordinate(double radius) {
-        //TODO: implement coordinate generation logic
-        return new Point2D.Double(0,0);
+        Point2D.Double center;
+        do {
+            double x = Math.random()*SIZE_X;
+            double y = Math.random()*SIZE_Y;
+            center = new Point2D.Double(x,y);
+        } while (findNearby(center,10).size()!=0);
+        return center;
     }
 
     /**
@@ -146,6 +152,24 @@ public class GameField {
         return nearby;
     }
 
+    /**
+     * Finds nearby located objects (difference between distance and radius less or equal then given value)
+     * @param coordinate coordinate to check
+     * @param distance distance to check
+     * @return list of nearby located objects
+     */
+    public List<GameEntity> findNearby(Point2D.Double coordinate, double distance) {
+        List<GameEntity> nearby = new LinkedList<>();
+        entities.forEach(e -> {
+            if (Math.abs(e.getCenterCoordinate().distance(coordinate)-e.getRadius())<=distance)
+                nearby.add(e);
+        });
+        playerCells.forEach(e -> {
+            if (Math.abs(e.getCenterCoordinate().distance(coordinate)-e.getRadius())<=distance)
+                nearby.add(e);
+        });
+        return nearby;
+    }
     /**
      * @return list of player controlled cells
      */
