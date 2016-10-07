@@ -11,7 +11,7 @@ import java.awt.geom.Point2D;
  * Describes small food particle behavior
  */
 public class FoodEntity extends GameEntity{
-    private static double radius = 5;
+    public static double radius = 5;
 
     public FoodEntity(@NotNull Point2D.Double centerCoordinate,
                       double radius,

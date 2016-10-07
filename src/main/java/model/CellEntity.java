@@ -2,19 +2,20 @@ package model;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by xakep666 on 05.10.16.
  *
  * Describes player controlled cell behavior
  */
-public class CellEntity extends GameEntity implements ISlowDownMoving,IEvenlyMoving,IInterracting {
+public class CellEntity extends GameEntity implements ISlowDownMoving,IEvenlyMoving, IInteracting {
     private Player owner;
-    private static double minradius = 10;
-    private static double maxradius = Math.min(GameField.SIZE_X,GameField.SIZE_Y)/2-10;
+    public static double minRadius = 10;
+    public static double maxRadius = Math.min(GameField.SIZE_X,GameField.SIZE_Y)/2-10;
 
     public CellEntity(@NotNull Point2D.Double centerCoordinate, double radius,
                       @NotNull Color color,@NotNull Player owner, @NotNull GameField gameField) {
@@ -27,11 +28,11 @@ public class CellEntity extends GameEntity implements ISlowDownMoving,IEvenlyMov
     }
 
     public double getMinRadius() {
-        return minradius;
+        return minRadius;
     }
 
     public double getMaxRadius() {
-        return maxradius;
+        return maxRadius;
     }
 
     public void interact(@NotNull GameEntity entity) {
@@ -50,4 +51,5 @@ public class CellEntity extends GameEntity implements ISlowDownMoving,IEvenlyMov
         //TODO: implement splitting logic
         return Collections.EMPTY_LIST;
     }
+
 }

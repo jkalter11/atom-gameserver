@@ -10,7 +10,7 @@ import java.awt.geom.Point2D;
  *
  * Describes small particles emited by player controlled cell
  */
-public class EmitedParticleEntity extends GameEntity implements ISlowDownMoving,IInterracting{
+public class EmitedParticleEntity extends GameEntity implements ISlowDownMoving, IInteracting {
     private static double radius = 10;
 
     public EmitedParticleEntity(@NotNull Point2D.Double centerCoordinate,

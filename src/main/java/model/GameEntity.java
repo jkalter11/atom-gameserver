@@ -1,11 +1,11 @@
 package model;
 
-import java.awt.geom.Point2D;
-import java.awt.Color;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import java.awt.*;
+import java.awt.geom.Point2D;
 
 /**
  * Created by xakep666 on 05.10.16.
@@ -21,6 +21,8 @@ public abstract class GameEntity {
     @NotNull
     private GameField gameField;
     private static Logger log = LogManager.getLogger(GameEntity.class);
+
+    private static double density = 2;
 
     /**
      * Create new entity
@@ -97,6 +99,14 @@ public abstract class GameEntity {
     protected void setRadius(double radius) {
         if (radius>=getMinRadius() && radius<=getMaxRadius())
             this.radius=radius;
+    }
+
+    /**
+     * Calculates and returns mass of entity.
+     * @return mass of entity
+     */
+    public double getMass() {
+        return Math.PI*radius*radius*density;
     }
 
     /**
