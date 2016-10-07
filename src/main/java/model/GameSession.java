@@ -14,8 +14,9 @@ public interface GameSession {
    * Player can join session whenever there are less then {@link GameConstants#MAX_PLAYERS_IN_SESSION} players within game session
    *
    * @param player player to join the game
+   * @return true if player joined, false otherwise (no free slots, etc.)
    */
-  void join(@NotNull Player player);
+  boolean join(@NotNull Player player);
 
   /**
    * Leave player from session

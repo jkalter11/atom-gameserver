@@ -2,10 +2,10 @@ package matchmaker;
 
 import model.GameSession;
 import model.Player;
+import model.SessionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +30,13 @@ public class SinglePlayerMatchMaker implements MatchMaker {
   public void joinGame(@NotNull Player player) {
     GameSession newGameSession = createNewGame();
     activeGameSessions.add(newGameSession);
-    newGameSession.join(player);
+    boolean joined = newGameSession.join(player);
     if (log.isInfoEnabled()) {
-      log.info(player + " joined " + newGameSession);
+      if (joined) {
+        log.info(player + " joined " + newGameSession);
+      } else {
+        log.info(player + " could not join to " + newGameSession);
+      }
     }
   }
 
@@ -42,13 +46,10 @@ public class SinglePlayerMatchMaker implements MatchMaker {
   }
 
   /**
-   * TODO HOMEWORK 1. Implement new game creation. Instantiate GameSession state
-   * Log every game instance creation
-   *
    * @return new GameSession
    */
   @NotNull
   private GameSession createNewGame() {
-    throw new NotImplementedException();//Implement it!
+    return new SessionManager();
   }
 }
