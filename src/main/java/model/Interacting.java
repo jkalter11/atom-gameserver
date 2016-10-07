@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * Logic of interaction with other entity
  */
-public interface IInteracting {
+public interface Interacting {
     /**
      * Method defines logic of interaction between two entities
      * @param entity entity which interact

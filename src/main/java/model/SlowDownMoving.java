@@ -7,7 +7,7 @@ import java.awt.geom.Point2D;
  *
  * Physics of objects which velocity slows down to zero
  */
-public interface ISlowDownMoving {
+public interface SlowDownMoving {
     /**
      * Move object to provided coordinate with slowing down (negative acceleration)
      * @param dest target point

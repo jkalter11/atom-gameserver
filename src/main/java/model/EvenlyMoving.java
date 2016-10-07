@@ -7,7 +7,7 @@ import java.awt.geom.Point2D;
  *
  * Physics of evenly moving objects
  */
-public interface IEvenlyMoving {
+public interface EvenlyMoving {
     /**
      * Move object to provided coordinate with constant velocity
      * @param dest target point

@@ -16,4 +16,10 @@ public interface GameSession {
    * @param player player to join the game
    */
   void join(@NotNull Player player);
+
+  /**
+   * Leave player from session
+   * @param player player who leaves
+   */
+  void leave(@NotNull Player player);
 }

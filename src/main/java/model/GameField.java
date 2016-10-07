@@ -38,12 +38,10 @@ public class GameField {
         //---------------------
     }
 
-    private List<GameEntity> entities;
-    private List<CellEntity> playerCells;
+    private List<GameEntity> entities = new LinkedList<>();
+    private List<CellEntity> playerCells = new LinkedList<>();
 
     public GameField() {
-        entities = new LinkedList<>();
-        playerCells = new LinkedList<>();
 
         if (log.isDebugEnabled()) {
             log.debug("Created game field");
@@ -58,6 +56,7 @@ public class GameField {
     private static Color generateColor(List<Color> colors) {
         return colors.get((int)Math.round(Math.random()*(colors.size()-1)));
     }
+
     /**
      * Generates coordinate on field in free region
      * @param radius radius of entity
@@ -151,14 +150,14 @@ public class GameField {
      * @return list of player controlled cells
      */
     public List<CellEntity> getPlayerCells() {
-        return playerCells;
+        return new LinkedList<>(playerCells);
     }
 
     /**
      * @return all non player controlled entities
      */
     public List<GameEntity> getNonPlayerEntities() {
-        return entities;
+        return new LinkedList<>(entities);
     }
 
     /**

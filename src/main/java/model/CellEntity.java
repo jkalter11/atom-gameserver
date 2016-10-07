@@ -12,7 +12,7 @@ import java.util.List;
  *
  * Describes player controlled cell behavior
  */
-public class CellEntity extends GameEntity implements ISlowDownMoving,IEvenlyMoving, IInteracting {
+public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMoving, Interacting {
     private Player owner;
     public static double minRadius = 10;
     public static double maxRadius = Math.min(GameField.SIZE_X,GameField.SIZE_Y)/2-10;
