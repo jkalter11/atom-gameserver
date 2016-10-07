@@ -34,4 +34,8 @@ public class SessionManager implements GameSession{
         gameField.removePlayerCells(player);
         players.removeIf(p -> p.equals(player));
     }
+
+    public int players() {
+        return players.size();
+    }
 }

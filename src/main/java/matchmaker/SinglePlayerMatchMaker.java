@@ -28,16 +28,24 @@ public class SinglePlayerMatchMaker implements MatchMaker {
    */
   @Override
   public void joinGame(@NotNull Player player) {
-    GameSession newGameSession = createNewGame();
-    activeGameSessions.add(newGameSession);
-    boolean joined = newGameSession.join(player);
-    if (log.isInfoEnabled()) {
+    boolean joined;
+    for(GameSession activeSession : activeGameSessions) {
+      joined = activeSession.join(player);
       if (joined) {
-        log.info(player + " joined " + newGameSession);
-      } else {
-        log.info(player + " could not join to " + newGameSession);
+        log.info("Player " + player + " joined to active session " + activeSession);
+        break;
       }
     }
+    log.info("Could not find acceptable sessions to join player " + player + ", creating new");
+    GameSession newSession = createNewGame();
+    joined = newSession.join(player);
+    if (!joined) {
+      log.error("Could not join new session, coding errors?");
+    } else {
+      activeGameSessions.add(newSession);
+      log.info("Added session " + newSession + " to active sessions");
+    }
+
   }
 
   @NotNull
@@ -51,5 +59,11 @@ public class SinglePlayerMatchMaker implements MatchMaker {
   @NotNull
   private GameSession createNewGame() {
     return new SessionManager();
+  }
+
+  @Override
+  public void leaveGame(@NotNull Player player) {
+    activeGameSessions.forEach(session -> session.leave(player));
+    activeGameSessions.removeIf(session -> session.players()==0);
   }
 }

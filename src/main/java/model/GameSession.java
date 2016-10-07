@@ -19,8 +19,14 @@ public interface GameSession {
   boolean join(@NotNull Player player);
 
   /**
-   * Leave player from session
+   * Leave player from session.
+   * If session has no more players, it will be closed
    * @param player player who leaves
    */
   void leave(@NotNull Player player);
+
+  /**
+   * @return number of players in session.
+   */
+  int players();
 }

@@ -23,4 +23,10 @@ public interface MatchMaker {
    */
   @NotNull
   List<GameSession> getActiveGameSessions();
+
+  /**
+   * Removes player from active session
+   * @param player player who want leave
+   */
+  void leaveGame(@NotNull Player player);
 }
