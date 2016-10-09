@@ -35,6 +35,7 @@ public class SessionManager implements GameSession{
     public void leave(@NotNull Player player) {
         gameField.removePlayerCells(player);
         players.removeIf(p -> p.equals(player));
+        log.info(String.format("Player \"%s\" left from session \"%s\"",player,this));
     }
 
     public int players() {
