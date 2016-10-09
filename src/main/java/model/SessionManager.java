@@ -16,15 +16,17 @@ public class SessionManager implements GameSession{
     private List<Player> players = new LinkedList<>();
     private GameField gameField = new GameField();
     private static Logger log = LogManager.getLogger(SessionManager.class);
+    private int maxPlayers;
 
-    public SessionManager() {
+    public SessionManager(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
         if (log.isDebugEnabled()) {
-            log.debug("Created new session manager");
+            log.debug("Created new session manager, maxPlayers: "+maxPlayers);
         }
     }
 
     public boolean join(@NotNull Player player) {
-        if (players.size()==GameConstants.MAX_PLAYERS_IN_SESSION) return false;
+        if (players.size()==maxPlayers) return false;
         players.add(player);
         gameField.spawnPlayerCell(player);
         return true;

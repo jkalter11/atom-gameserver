@@ -1,5 +1,6 @@
 package matchmaker;
 
+import model.GameConstants;
 import model.GameSession;
 import model.Player;
 import model.SessionManager;
@@ -58,7 +59,7 @@ public class SinglePlayerMatchMaker implements MatchMaker {
    */
   @NotNull
   private GameSession createNewGame() {
-    return new SessionManager();
+    return new SessionManager(GameConstants.MAX_PLAYERS_IN_SINGLE_SESSION);
   }
 
   @Override
