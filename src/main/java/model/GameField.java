@@ -44,7 +44,7 @@ public class GameField {
     public GameField() {
 
         if (log.isDebugEnabled()) {
-            log.debug("Created game field");
+            log.debug("Created game field \""+this+"\"");
         }
     }
 
