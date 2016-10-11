@@ -27,9 +27,6 @@ public class BushEntity extends GameEntity implements Splittable{
         return maxRadius;
     }
 
-    @Override
-    public double getMass() { return 0;}
-
     public java.util.List<CellEntity> split(int children) {
         //TODO: implement splitting logic
         return Collections.EMPTY_LIST;
