@@ -12,7 +12,7 @@ import java.util.List;
  *
  * Describes player controlled cell behavior
  */
-public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMoving, Interacting {
+public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMoving, Interacting, Splittable {
     private Player owner;
     public static double minRadius = 10;
     public static double maxRadius = Math.min(GameField.SIZE_X,GameField.SIZE_Y)/2-10;
@@ -47,7 +47,7 @@ public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMovi
         //TODO: implement movement logic
     }
 
-    public List<CellEntity> split(int numchild) {
+    public List<CellEntity> split(int children) {
         //TODO: implement splitting logic
         return Collections.EMPTY_LIST;
     }

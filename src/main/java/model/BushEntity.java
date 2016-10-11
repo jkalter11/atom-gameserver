@@ -4,13 +4,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.Collections;
 
 /**
  * Created by xakep666 on 05.10.16.
  *
  * Describes green bush behavior
  */
-public class BushEntity extends GameEntity{
+public class BushEntity extends GameEntity implements Splittable{
     public static final double minRadius = 10;
     public static final double maxRadius = 20;
 
@@ -28,4 +29,9 @@ public class BushEntity extends GameEntity{
 
     @Override
     public double getMass() { return 0;}
+
+    public java.util.List<CellEntity> split(int children) {
+        //TODO: implement splitting logic
+        return Collections.EMPTY_LIST;
+    }
 }
