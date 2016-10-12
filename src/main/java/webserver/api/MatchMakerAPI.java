@@ -1,10 +1,11 @@
-package webserver;
+package webserver.api;
 
 import com.google.gson.Gson;
 import model.GameSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import webserver.Server;
 import webserver.auth.Authorized;
 
 import javax.ws.rs.GET;
