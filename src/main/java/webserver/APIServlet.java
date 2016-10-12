@@ -18,7 +18,7 @@ import java.util.List;
  * Provides web-server to access all services using REST api
  */
 public class APIServlet {
-    public static final int PORT = 80;
+    public static final int PORT = 8080;
     private APIServlet() {}
     public static UsersBase base = new InMemoryBase();
     public static List<MatchMaker> matchMakers = new LinkedList<>();
