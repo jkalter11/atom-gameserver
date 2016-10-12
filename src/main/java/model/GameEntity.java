@@ -110,6 +110,15 @@ public abstract class GameEntity {
     }
 
     /**
+     * Calculates and sets radius from new mass
+     * @param newMass a new mass value
+     */
+    public void setMass(double newMass) {
+        double newRadius = Math.sqrt(newMass/density/Math.PI);
+        setRadius(newRadius);
+    }
+
+    /**
      * Unlink entity from game field.
      * Method needed for correct GC.
      */
