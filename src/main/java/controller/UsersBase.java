@@ -60,14 +60,6 @@ public interface UsersBase {
     boolean isValidToken(@NotNull UUID token);
 
     /**
-     * Save player stats to base
-     * @param player player which stats will saved
-     * @param token player`s acess token
-     * @return true if save was successful, false otherwise
-     */
-    boolean savePlayerStats(@NotNull Player player, @NotNull UUID token);
-
-    /**
      * Finds user and creates Player object by user name
      * @param name user name to find
      * @param token user`s access token
