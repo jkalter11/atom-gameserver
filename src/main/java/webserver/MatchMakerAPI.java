@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import webserver.auth.Authorized;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
@@ -25,6 +26,11 @@ public class MatchMakerAPI {
     @NotNull
     private static final Logger log = LogManager.getLogger(MatchMakerAPI.class);
 
+    /**
+     * Method retrieves information about active game sessions and returns session ids as json
+     * @return json-encoded session id list
+     */
+    @GET
     @Authorized
     @Produces("application/json")
     @Path("getActiveGameSessions")
