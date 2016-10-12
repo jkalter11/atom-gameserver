@@ -4,6 +4,7 @@ import controller.InMemoryBase;
 import controller.UsersBase;
 import matchmaker.MatchMaker;
 import matchmaker.SinglePlayerMatchMaker;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import webserver.auth.AuthenticationFilter;
@@ -16,9 +17,9 @@ import java.util.List;
  *
  * Provides web-server to access all services using REST api
  */
-public class Server {
-    private static final int PORT = 80;
-    private Server() {}
+public class APIServlet {
+    public static final int PORT = 80;
+    private APIServlet() {}
     public static UsersBase base = new InMemoryBase();
     public static List<MatchMaker> matchMakers = new LinkedList<>();
 
@@ -29,7 +30,7 @@ public class Server {
     public static void start() throws Exception {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
-        org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(PORT);
+        Server server = new Server(PORT);
         server.setHandler(context);
 
         ServletHolder jerseyServlet = context.addServlet(
