@@ -2,6 +2,8 @@ package model;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 /**
  * Single agar.io game session
  * <p>Single game session take place in square map, where players battle for food
@@ -29,4 +31,9 @@ public interface GameSession {
    * @return number of players in session.
    */
   int players();
+
+  /**
+   * @return session identifier
+   */
+  UUID getSessionID();
 }
