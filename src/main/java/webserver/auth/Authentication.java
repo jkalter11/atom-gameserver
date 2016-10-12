@@ -2,7 +2,7 @@ package webserver.auth;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import webserver.Server;
+import webserver.APIServlet;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -23,7 +23,7 @@ public class Authentication {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        if (!Server.base.register(user,password)) {
+        if (!APIServlet.base.register(user,password)) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
 
@@ -44,7 +44,7 @@ public class Authentication {
 
         try {
             // Authenticate the user using the credentials provided
-            UUID token = Server.base.requestToken(user,password);
+            UUID token = APIServlet.base.requestToken(user,password);
             if (token == null) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
@@ -61,9 +61,9 @@ public class Authentication {
 
     static void validateToken(String rawToken) throws Exception {
         UUID token = UUID.fromString(rawToken);
-        if (!Server.base.isValidToken(token)) {
+        if (!APIServlet.base.isValidToken(token)) {
             throw new Exception("Token validation exception");
         }
-        log.info("Correct token from '{}'", Server.base.getTokenOwner(token));
+        log.info("Correct token from '{}'", APIServlet.base.getTokenOwner(token));
     }
 }

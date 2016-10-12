@@ -5,7 +5,7 @@ import model.GameSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import webserver.Server;
+import webserver.APIServlet;
 import webserver.auth.Authorized;
 
 import javax.ws.rs.GET;
@@ -39,7 +39,7 @@ public class MatchMakerAPI {
         log.info("Active sessions list requested");
         Gson gson = new Gson();
         List<GameSession> activeSessions = new LinkedList<>();
-        Server.matchMakers.forEach(mm -> activeSessions.addAll(mm.getActiveGameSessions()));
+        APIServlet.matchMakers.forEach(mm -> activeSessions.addAll(mm.getActiveGameSessions()));
         List<UUID> sessionIDs = new ArrayList<>(activeSessions.size());
         activeSessions.forEach(as -> sessionIDs.add(as.getSessionID()));
         return Response.ok(gson.toJson(sessionIDs)).build();
