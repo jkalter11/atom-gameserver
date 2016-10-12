@@ -124,4 +124,10 @@ public class InMemoryBase implements UsersBase{
     public Player getPlayerByName(@NotNull String name, @NotNull UUID token) {
         return userpass.containsKey(name) && isValidToken(token) ? new Player(name) : null;
     }
+
+    @Override
+    @Nullable
+    public String getTokenOwner(@NotNull UUID token) {
+        return tokensOwned.get(token);
+    }
 }

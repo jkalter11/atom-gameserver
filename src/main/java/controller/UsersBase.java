@@ -67,4 +67,12 @@ public interface UsersBase {
      */
     @Nullable
     Player getPlayerByName(@NotNull String name, @NotNull UUID token);
+
+    /**
+     * Finds token owner
+     * @param token token to search
+     * @return username
+     */
+    @Nullable
+    String getTokenOwner(@NotNull UUID token);
 }
