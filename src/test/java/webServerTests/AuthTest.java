@@ -31,11 +31,13 @@ public class AuthTest {
                     Assert.fail(e.toString());
                 }
             }).start();
-            Thread.sleep(20000); //wait till server starts
+            Thread.sleep(30000); //wait till server starts
             OkHttpClient httpClient = new OkHttpClient();
             Response resp = httpClient.newCall(request).execute();
-            System.out.println(resp.body().string());
             Assert.assertTrue(resp.isSuccessful());
+            //try again, must get error
+            resp = httpClient.newCall(request).execute();
+            Assert.assertEquals(resp.code(),javax.ws.rs.core.Response.Status.NOT_ACCEPTABLE.getStatusCode());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.toString());

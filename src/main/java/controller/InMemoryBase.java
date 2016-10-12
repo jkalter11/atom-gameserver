@@ -1,5 +1,4 @@
 package controller;
-import com.sun.org.apache.xml.internal.security.algorithms.MessageDigestAlgorithm;
 import model.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +19,7 @@ import java.util.UUID;
  */
 public class InMemoryBase implements UsersBase{
     @NotNull
-    private String digestAlg = MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1;
+    private String digestAlg = "sha-1";
 
     @NotNull
     private Logger log = LogManager.getLogger(InMemoryBase.class);

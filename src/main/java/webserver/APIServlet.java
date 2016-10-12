@@ -39,7 +39,7 @@ public class APIServlet {
 
         jerseyServlet.setInitParameter(
                 "jersey.config.server.provider.packages",
-                Server.class.getPackage().getName()
+                APIServlet.class.getPackage().getName()
         );
 
         jerseyServlet.setInitParameter(
