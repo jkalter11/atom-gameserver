@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -40,11 +41,10 @@ public interface UsersBase {
      * @param username user who wants change his pass
      * @param oldpwd user`s old password
      * @param newpwd user`s new password
-     * @param token user`s access token
      * @return true if password changed, false otherwise
      */
     boolean changePassword(@NotNull String username, @NotNull String oldpwd,
-                            @NotNull String newpwd, @NotNull UUID token);
+                            @NotNull String newpwd);
 
     /**
      * Removes access token from valid tokens (logout user)
@@ -62,11 +62,10 @@ public interface UsersBase {
     /**
      * Finds user and creates Player object by user name
      * @param name user name to find
-     * @param token user`s access token
      * @return Player object if found and token valid, null otherwise
      */
     @Nullable
-    Player getPlayerByName(@NotNull String name, @NotNull UUID token);
+    Player getPlayerByName(@NotNull String name);
 
     /**
      * Finds token owner
@@ -75,4 +74,19 @@ public interface UsersBase {
      */
     @Nullable
     String getTokenOwner(@NotNull UUID token);
+
+    /**
+     * Finds logged in users (with valid tokens at now)
+     * @return list of logged in user names
+     */
+    @NotNull
+    List<String> getLoggedInUsers();
+
+    /**
+     * Sets new name to token owner
+     * @param newName a new name
+     * @param token token of user whose name will be changed
+     * @return true if name was changed, false otherwise
+     */
+    boolean setNewName(@NotNull String newName,@NotNull UUID token);
 }

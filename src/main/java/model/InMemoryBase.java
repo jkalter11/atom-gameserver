@@ -1,4 +1,5 @@
 package model;
+
 import controller.UsersBase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,10 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by xakep666 on 12.10.16.
@@ -109,9 +107,8 @@ public class InMemoryBase implements UsersBase {
 
     @Override
     public boolean changePassword(@NotNull String username, @NotNull String oldpwd,
-                            @NotNull String newpwd, @NotNull UUID token) {
-        if (!isValidToken(token) || !tokensOwned.get(token).equals(username)
-                || !userpass.containsKey(username)) return false;
+                            @NotNull String newpwd) {
+        if (!userpass.containsKey(username)) return false;
         MessageDigest md;
         try {
             md = MessageDigest.getInstance(digestAlg);
@@ -128,13 +125,37 @@ public class InMemoryBase implements UsersBase {
 
     @Override
     @Nullable
-    public Player getPlayerByName(@NotNull String name, @NotNull UUID token) {
-        return userpass.containsKey(name) && isValidToken(token) ? new Player(name) : null;
+    public Player getPlayerByName(@NotNull String name) {
+        return userpass.containsKey(name) ? new Player(name) : null;
     }
 
     @Override
     @Nullable
     public String getTokenOwner(@NotNull UUID token) {
         return tokensOwned.get(token);
+    }
+
+    @Override
+    public boolean setNewName(@NotNull String newName,@NotNull UUID token) {
+        String oldName = getTokenOwner(token);
+        if (oldName==null) return false;
+        byte[] passHash = userpass.get(oldName);
+        userpass.remove(oldName);
+        userpass.put(oldName,passHash);
+        tokensOwned.remove(token);
+        tokensOwned.put(token,newName);
+        tokensOwnedReversed.remove(oldName);
+        tokensOwnedReversed.put(newName,token);
+        return true;
+    }
+
+    @Override
+    @NotNull
+    public List<String> getLoggedInUsers() {
+        List<String> ret = new ArrayList<>(tokensOwned.size());
+        tokensOwned.forEach((UUID token, String owner) -> {
+            if(isValidToken(token)) ret.add(owner);
+        });
+        return ret;
     }
 }
