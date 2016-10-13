@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 import webserver.APIServlet;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
@@ -65,5 +67,17 @@ public class Authentication {
             throw new Exception("Token validation exception");
         }
         log.info("Correct token from '{}'", APIServlet.base.getTokenOwner(token));
+    }
+
+    @POST
+    @Authorized
+    @Path("logout")
+    @Produces("text/plain")
+    public Response logout(@Context HttpHeaders headers) {
+        UUID token = AuthenticationFilter.getTokenFromHeaders(headers);
+        if (token==null)
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        APIServlet.base.logout(token);
+        return Response.ok("Logged out").build();
     }
 }

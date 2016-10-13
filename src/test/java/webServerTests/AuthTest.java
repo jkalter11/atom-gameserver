@@ -87,6 +87,42 @@ public class AuthTest {
             e.printStackTrace();
             Assert.fail(e.toString());
         }
+    }
 
+    @Test
+    public void testLogout() {
+        APIServlet.base.register("user","pass");
+        UUID token = APIServlet.base.requestToken("user","pass");
+        Assert.assertNotNull(token);
+        MediaType mType = MediaType.parse("raw");
+        RequestBody body = RequestBody.create(mType,"");
+        String requestUrl = SERVICE_URL + "auth/logout";
+        Request request =new Request.Builder()
+                .url(requestUrl)
+                .post(body)
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .addHeader("Authorization", "Bearer "+token)
+                .build();
+        try {
+            new Thread(() -> {
+                try {
+                    APIServlet.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Assert.fail(e.toString());
+                }
+            }).start();
+            Thread.sleep(30000); //wait till server starts
+            OkHttpClient httpClient = new OkHttpClient();
+            Response resp = httpClient.newCall(request).execute();
+            Assert.assertTrue(resp.isSuccessful());
+            Assert.assertFalse(APIServlet.base.isValidToken(token));
+            //try again, must get error
+            resp = httpClient.newCall(request).execute();
+            Assert.assertEquals(resp.code(),javax.ws.rs.core.Response.Status.UNAUTHORIZED.getStatusCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.toString());
+        }
     }
 }
