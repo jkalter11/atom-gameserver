@@ -1,5 +1,5 @@
-package controller;
-import model.Player;
+package model;
+import controller.UsersBase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +17,7 @@ import java.util.UUID;
  *
  * DataBase uses memory to keep user data
  */
-public class InMemoryBase implements UsersBase{
+public class InMemoryBase implements UsersBase {
     @NotNull
     private String digestAlg = "sha-1";
 
