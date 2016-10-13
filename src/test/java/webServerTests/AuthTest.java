@@ -17,7 +17,7 @@ public class AuthTest {
     @Test
     public void testRegister() {
         MediaType mType = MediaType.parse("raw");
-        RequestBody body = RequestBody.create(mType,"login=user&password=pass");
+        RequestBody body = RequestBody.create(mType,"user=user&password=pass");
         String requestUrl = SERVICE_URL + "auth/register";
         Request request =new Request.Builder()
                 .url(requestUrl)
@@ -50,8 +50,8 @@ public class AuthTest {
     public void testAuth() {
         APIServlet.base.register("user","pass");
         MediaType mType = MediaType.parse("raw");
-        RequestBody body = RequestBody.create(mType,"login=user&password=pass");
-        RequestBody body2 = RequestBody.create(mType, "login=a&password=b");
+        RequestBody body = RequestBody.create(mType,"user=user&password=pass");
+        RequestBody body2 = RequestBody.create(mType, "user=a&password=b");
         String requestUrl = SERVICE_URL + "auth/login";
         Request request =new Request.Builder()
                 .url(requestUrl)

@@ -45,7 +45,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     }
 
     @Nullable
-    static UUID getTokenFromHeaders(@NotNull HttpHeaders headers) {
+    public static UUID getTokenFromHeaders(@NotNull HttpHeaders headers) {
         List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
         try {
             return UUID.fromString(authHeaders.get(0).substring("Bearer".length()).trim());

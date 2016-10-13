@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by xakep666 on 12.10.16.
@@ -26,25 +27,25 @@ public class InMemoryBase implements UsersBase {
      * UserName-Password table
      */
     @NotNull
-    private Map<String,byte[]> userpass = new TreeMap<>();
+    private Map<String,byte[]> userpass = new ConcurrentHashMap<>();
 
     /**
      * Token-UserName table
      */
     @NotNull
-    private Map<UUID, String> tokensOwned = new TreeMap<>();
+    private Map<UUID, String> tokensOwned = new ConcurrentHashMap<>();
 
     /**
      * UserName-Token table
      */
     @NotNull
-    private Map<String, UUID> tokensOwnedReversed = new TreeMap<>();
+    private Map<String, UUID> tokensOwnedReversed = new ConcurrentHashMap<>();
 
     /**
      * Token-CreationDate table
      */
     @NotNull
-    private Map<UUID, Date> tokensTimed = new TreeMap<>();
+    private Map<UUID, Date> tokensTimed = new ConcurrentHashMap<>();
 
     public InMemoryBase() {
         log.info("Created in-memory database, using algorithm "+digestAlg);
@@ -77,6 +78,7 @@ public class InMemoryBase implements UsersBase {
             log.error("Cannot calculate password hash: "+e);
             return null;
         }
+        log.info("User \""+username+"\" requested token");
         UUID foundToken = tokensOwnedReversed.get(username);
         if(foundToken!=null && isValidToken(foundToken)) return foundToken;
         if(MessageDigest.isEqual(md.digest(),userpass.get(username))) {
@@ -84,6 +86,7 @@ public class InMemoryBase implements UsersBase {
             tokensTimed.put(newToken, new Date());
             tokensOwned.put(newToken, username);
             tokensOwnedReversed.put(username, newToken);
+            log.info("New token generated for user \""+username+"\"");
             return newToken;
         }
         return null;
@@ -139,9 +142,10 @@ public class InMemoryBase implements UsersBase {
     public boolean setNewName(@NotNull String newName,@NotNull UUID token) {
         String oldName = getTokenOwner(token);
         if (oldName==null) return false;
+        if (userpass.containsKey(newName)) return false;
         byte[] passHash = userpass.get(oldName);
         userpass.remove(oldName);
-        userpass.put(oldName,passHash);
+        userpass.put(newName,passHash);
         tokensOwned.remove(token);
         tokensOwned.put(token,newName);
         tokensOwnedReversed.remove(oldName);

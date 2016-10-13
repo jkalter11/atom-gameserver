@@ -18,7 +18,7 @@ public class Authentication {
     @Path("register")
     @Consumes("application/x-www-form-urlencoded")
     @Produces("text/plain")
-    public Response register(@FormParam("login") String user,
+    public Response register(@FormParam("user") String user,
                              @FormParam("password") String password) {
 
         if (user == null || password == null) {
@@ -37,7 +37,7 @@ public class Authentication {
     @Path("login")
     @Consumes("application/x-www-form-urlencoded")
     @Produces("text/plain")
-    public Response authenticateUser(@FormParam("login") String user,
+    public Response authenticateUser(@FormParam("user") String user,
                                      @FormParam("password") String password) {
 
         if (user == null || password == null) {
