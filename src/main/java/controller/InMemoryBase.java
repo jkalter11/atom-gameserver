@@ -28,13 +28,19 @@ public class InMemoryBase implements UsersBase{
      * UserName-Password table
      */
     @NotNull
-    private Map<String,MessageDigest> userpass = new TreeMap<>();
+    private Map<String,byte[]> userpass = new TreeMap<>();
 
     /**
      * Token-UserName table
      */
     @NotNull
     private Map<UUID, String> tokensOwned = new TreeMap<>();
+
+    /**
+     * UserName-Token table
+     */
+    @NotNull
+    private Map<String, UUID> tokensOwnedReversed = new TreeMap<>();
 
     /**
      * Token-CreationDate table
@@ -56,7 +62,7 @@ public class InMemoryBase implements UsersBase{
             log.error("Cannot calculate password hash: "+e);
             return false;
         }
-        userpass.put(username,md);
+        userpass.put(username,md.digest());
         log.info("User \""+username+"\" registered");
         return true;
     }
@@ -73,13 +79,13 @@ public class InMemoryBase implements UsersBase{
             log.error("Cannot calculate password hash: "+e);
             return null;
         }
-        if(md.equals(userpass.get(username))) {
-            UUID newToken;
-            do {
-                newToken = UUID.randomUUID();
-            } while (tokensTimed.containsKey(newToken) && tokensOwned.containsKey(newToken));
+        UUID foundToken = tokensOwnedReversed.get(username);
+        if(foundToken!=null && isValidToken(foundToken)) return foundToken;
+        if(MessageDigest.isEqual(md.digest(),userpass.get(username))) {
+            UUID newToken = UUID.randomUUID();
             tokensTimed.put(newToken, new Date());
             tokensOwned.put(newToken, username);
+            tokensOwnedReversed.put(username, newToken);
             return newToken;
         }
         return null;
@@ -87,7 +93,8 @@ public class InMemoryBase implements UsersBase{
 
     @Override
     public boolean isValidToken(@NotNull UUID token) {
-        if (!tokensTimed.containsKey(token) || !tokensOwned.containsKey(token)) return false;
+        if (!tokensTimed.containsKey(token) || !tokensOwned.containsKey(token)
+                || !tokensOwnedReversed.containsValue(token)) return false;
 
         Date now = new Date();
         return Math.abs(now.getTime()-tokensTimed.get(token).getTime())<tokenLifeTime.toMillis();
@@ -95,12 +102,13 @@ public class InMemoryBase implements UsersBase{
 
     @Override
     public void logout(@NotNull UUID token) {
+        tokensOwnedReversed.remove(tokensOwned.get(token));
         tokensOwned.remove(token);
         tokensTimed.remove(token);
     }
 
     @Override
-    public boolean changePasssword(@NotNull String username, @NotNull String oldpwd,
+    public boolean changePassword(@NotNull String username, @NotNull String oldpwd,
                             @NotNull String newpwd, @NotNull UUID token) {
         if (!isValidToken(token) || !tokensOwned.get(token).equals(username)
                 || !userpass.containsKey(username)) return false;
@@ -112,9 +120,9 @@ public class InMemoryBase implements UsersBase{
             return false;
         }
         md.update(oldpwd.getBytes());
-        if (!userpass.get(username).equals(md)) return false;
+        if (!MessageDigest.isEqual(md.digest(),userpass.get(username))) return false;
         md.update(newpwd.getBytes());
-        userpass.put(username,md);
+        userpass.put(username,md.digest());
         return true;
     }
 

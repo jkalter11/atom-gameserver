@@ -43,7 +43,7 @@ public interface UsersBase {
      * @param token user`s access token
      * @return true if password changed, false otherwise
      */
-    boolean changePasssword(@NotNull String username, @NotNull String oldpwd,
+    boolean changePassword(@NotNull String username, @NotNull String oldpwd,
                             @NotNull String newpwd, @NotNull UUID token);
 
     /**
