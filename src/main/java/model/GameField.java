@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+
 /**
  * Created by xakep666 on 05.10.16.
  *
@@ -26,6 +27,8 @@ public class GameField {
     private static Logger log = LogManager.getLogger(GameField.class);
     private static List<Color> foodColors = new ArrayList<>();
     private static List<Color> playerColors = new ArrayList<>();
+
+
     static {
         //food colors init ----
         foodColors.add(Color.RED);
@@ -42,8 +45,7 @@ public class GameField {
         //---------------------
     }
 
-    private List<GameEntity> entities = new LinkedList<>();
-    private List<CellEntity> playerCells = new LinkedList<>();
+    private List<GameEntity> entities = new ArrayList<>();
 
     public GameField() {
 
@@ -114,7 +116,7 @@ public class GameField {
         double radius = CellEntity.minRadius;
         Point2D.Double center = genCenterCoordinate(radius);
         Color color = generateColor(playerColors);
-        playerCells.add(new CellEntity(center,radius,color,player,this));
+        entities.add(new CellEntity(center,radius,color,player,this));
     }
 
     /**
@@ -124,13 +126,13 @@ public class GameField {
      */
     public void splitPlayerCells(@NotNull Player player, int numchild) {
         List<CellEntity> newCells = new LinkedList<>();
-        playerCells.forEach(e -> {
-            if (e.getOwner().equals(player)) {
-                Collections.copy(newCells,e.split(numchild));
+        entities.forEach(e -> {
+            if (e instanceof CellEntity && ((CellEntity)e).getOwner().equals(player)) {
+                Collections.copy(newCells,((CellEntity)e).split(numchild));
             }
         });
-        playerCells.removeIf(e -> e.getOwner().equals(player));
-        playerCells.addAll(newCells);
+        entities.removeIf(e -> (e instanceof CellEntity) && ((CellEntity)e).getOwner().equals(player));
+        entities.addAll(newCells);
     }
 
     /**
@@ -140,18 +142,22 @@ public class GameField {
      * @return list of collided object
      */
     public List<GameEntity> findNearby(GameEntity entity, double distance) {
-        List<GameEntity> nearby = new LinkedList<>();
-        entities.forEach(e -> {
-            if (Math.abs(e.getCenterCoordinate().distance(entity.getCenterCoordinate()) -
-                    e.getRadius()+entity.getRadius()) <= distance) {
-                nearby.add(e);
-            }
+        List<GameEntity> nearby = new ArrayList<>();
+        entities.sort((GameEntity e1,GameEntity e2) -> {
+            double lb1 = e1.getCenterCoordinate().getX()-e1.getRadius();
+            double lb2 = e2.getCenterCoordinate().getX()-e2.getRadius();
+            if (lb1<lb2) return -1;
+            if (lb1>lb2) return 1;
+            return 0;
         });
-        playerCells.forEach(e -> {
-            if (Math.abs(e.getCenterCoordinate().distance(entity.getCenterCoordinate()) -
-                    e.getRadius()+entity.getRadius()) <= distance) {
-                nearby.add(e);
-            }
+        entities.forEach(e -> {
+            //do actual check if right border of given entity greater then left border of checking particle
+            if (entity.getCenterCoordinate().getX() + entity.getRadius() + distance>
+                    e.getCenterCoordinate().getX() - e.getRadius())
+                if (Math.abs(e.getCenterCoordinate().distance(entity.getCenterCoordinate()) -
+                        e.getRadius()+entity.getRadius()) <= distance) {
+                    nearby.add(e);
+                }
         });
         return nearby;
     }
@@ -165,12 +171,9 @@ public class GameField {
     public List<GameEntity> findNearby(Point2D.Double coordinate, double distance) {
         List<GameEntity> nearby = new LinkedList<>();
         entities.forEach(e -> {
-            if (Math.abs(e.getCenterCoordinate().distance(coordinate)-e.getRadius())<=distance)
-                nearby.add(e);
-        });
-        playerCells.forEach(e -> {
-            if (Math.abs(e.getCenterCoordinate().distance(coordinate)-e.getRadius())<=distance)
-                nearby.add(e);
+            if (coordinate.getX() + distance > e.getCenterCoordinate().getX() - e.getRadius())
+                if (Math.abs(e.getCenterCoordinate().distance(coordinate)-e.getRadius())<=distance)
+                    nearby.add(e);
         });
         return nearby;
     }
@@ -178,14 +181,24 @@ public class GameField {
      * @return list of player controlled cells
      */
     public List<CellEntity> getPlayerCells() {
-        return new LinkedList<>(playerCells);
+        List<CellEntity> ret = new ArrayList<>();
+        entities.forEach(e -> {
+            if (e instanceof CellEntity)
+                ret.add((CellEntity)e);
+        });
+        return ret;
     }
 
     /**
      * @return all non player controlled entities
      */
     public List<GameEntity> getNonPlayerEntities() {
-        return new LinkedList<>(entities);
+        List<GameEntity> ret = new ArrayList<>();
+        entities.forEach(e -> {
+            if (!(e instanceof CellEntity))
+                ret.add(e);
+        });
+        return ret;
     }
 
     /**
@@ -193,11 +206,7 @@ public class GameField {
      * @param entity object to remove
      */
     public void removeEntity(@NotNull GameEntity entity) {
-        if (entity instanceof CellEntity) {
-            playerCells.removeIf(e -> e.equals(entity));
-        } else {
-            entities.removeIf(e -> e.equals(entity));
-        }
+        entities.removeIf(e -> e.equals(entity));
     }
 
     /**
@@ -205,6 +214,6 @@ public class GameField {
      * @param player player which cells will be removed
      */
     public void removePlayerCells(@NotNull Player player) {
-        playerCells.removeIf(e -> e.getOwner().equals(player));
+        entities.removeIf(e -> (e instanceof CellEntity) && ((CellEntity)e).getOwner().equals(player));
     }
 }
