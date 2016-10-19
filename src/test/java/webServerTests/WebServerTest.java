@@ -12,7 +12,7 @@ import java.security.SecureRandom;
  * Created by xakep666 on 19.10.16.
  * Class contains logic needed to run server and stop server
  */
-class WebServerTest {
+public class WebServerTest {
     static final String SERVICE_URL = "http://localhost:"+APIServlet.PORT+"/";
     private static SecureRandom sr = new SecureRandom();
     static String genRandomStr() {
