@@ -1,9 +1,9 @@
 package matchmaker;
 
 import model.GameConstants;
-import model.GameSession;
 import model.Player;
-import model.SessionManager;
+import model.session.GameSession;
+import model.session.SessionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;

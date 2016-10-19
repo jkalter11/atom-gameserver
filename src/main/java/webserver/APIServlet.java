@@ -1,9 +1,9 @@
 package webserver;
 
-import controller.UsersBase;
 import matchmaker.MatchMaker;
 import matchmaker.SinglePlayerMatchMaker;
-import model.InMemoryBase;
+import model.database.InMemoryBase;
+import model.database.UsersBase;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;

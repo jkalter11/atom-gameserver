@@ -1,7 +1,7 @@
 package webserver.api;
 
 import com.google.gson.Gson;
-import model.GameSession;
+import model.session.GameSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;

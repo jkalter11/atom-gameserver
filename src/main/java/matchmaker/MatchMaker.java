@@ -1,7 +1,7 @@
 package matchmaker;
 
-import model.GameSession;
 import model.Player;
+import model.session.GameSession;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
