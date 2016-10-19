@@ -22,7 +22,7 @@ public class APIServlet {
     private APIServlet() {}
     public static UsersBase base = new InMemoryBase();
     public static List<MatchMaker> matchMakers = new LinkedList<>();
-
+    private static Server server;
     static {
         matchMakers.add(new SinglePlayerMatchMaker());
     }
@@ -30,7 +30,7 @@ public class APIServlet {
     public static void start() throws Exception {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
-        Server server = new Server(PORT);
+        server = new Server(PORT);
         server.setHandler(context);
 
         ServletHolder jerseyServlet = context.addServlet(
@@ -47,11 +47,22 @@ public class APIServlet {
                 AuthenticationFilter.class.getCanonicalName()
         );
 
+        server.start();
+    }
+
+    public static void join() throws Exception {
+        server.join();
+    }
+
+    public static void destroy() {
+        server.destroy();
+    }
+
+    public static void stop() {
         try {
-            server.start();
-            server.join();
-        } finally {
-            server.destroy();
+            server.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

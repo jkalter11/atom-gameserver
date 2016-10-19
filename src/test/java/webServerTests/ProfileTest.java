@@ -7,15 +7,12 @@ import webserver.APIServlet;
 
 import java.util.UUID;
 
-import static webServerTests.WebServerTest.SERVICE_URL;
-import static webServerTests.WebServerTest.genRandomStr;
-
 /**
  * Created by xakep666 on 13.10.16.
  *
  * Unit tests for Profile API
  */
-public class ProfileTest {
+public class ProfileTest extends WebServerTest{
     @Test
     public void testSetNewName() {
         String user1 = genRandomStr();
@@ -26,6 +23,8 @@ public class ProfileTest {
         APIServlet.base.requestToken(user1,pass);
         UUID token1 = APIServlet.base.requestToken(user1,pass);
         UUID token2 = APIServlet.base.requestToken(user2,pass);
+        Assert.assertNotNull(token1);
+        Assert.assertNotNull(token2);
 
         String requestUrl = SERVICE_URL + "profile/name";
         MediaType mType = MediaType.parse("raw");
@@ -61,6 +60,9 @@ public class ProfileTest {
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.toString());
+        } finally {
+            APIServlet.base.logout(token1);
+            APIServlet.base.logout(token2);
         }
     }
 }

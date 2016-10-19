@@ -7,15 +7,12 @@ import webserver.APIServlet;
 
 import java.util.UUID;
 
-import static webServerTests.WebServerTest.SERVICE_URL;
-import static webServerTests.WebServerTest.genRandomStr;
-
 /**
  * Created by xakep666 on 12.10.16.
  *
  * Unit tests for authentication
  */
-public class AuthTest {
+public class AuthTest extends WebServerTest {
 
     @Test
     public void testRegister() {

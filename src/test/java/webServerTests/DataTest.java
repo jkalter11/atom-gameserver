@@ -7,15 +7,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import webserver.APIServlet;
 
-import static webServerTests.WebServerTest.SERVICE_URL;
-import static webServerTests.WebServerTest.genRandomStr;
+import java.util.UUID;
 
 /**
  * Created by xakep666 on 13.10.16.
  *
  * Unit tests for Data API
  */
-public class DataTest {
+public class DataTest extends WebServerTest{
     @Test
     public void getLoggedInTest() {
         String user1 = genRandomStr();
@@ -23,7 +22,9 @@ public class DataTest {
         String pass = genRandomStr();
         APIServlet.base.register(user1,pass);
         APIServlet.base.register(user2,pass);
-        APIServlet.base.requestToken(user1,pass);
+        UUID token = APIServlet.base.requestToken(user1,pass);
+
+        Assert.assertNotNull(token);
 
         String requestUrl = SERVICE_URL + "data/users";
         Request request =new Request.Builder()
@@ -40,6 +41,8 @@ public class DataTest {
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.toString());
+        } finally {
+            APIServlet.base.logout(token);
         }
     }
 }
