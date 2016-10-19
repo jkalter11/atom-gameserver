@@ -1,5 +1,6 @@
-package model;
+package model.entities;
 
+import model.GameField;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.util.Collections;
  *
  * Describes green bush behavior
  */
-public class BushEntity extends GameEntity implements Splittable{
+public class BushEntity extends GameEntity implements Splittable {
     public static final double minRadius = 10;
     public static final double maxRadius = 20;
 

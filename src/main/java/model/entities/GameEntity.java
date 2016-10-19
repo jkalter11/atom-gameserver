@@ -1,5 +1,6 @@
-package model;
+package model.entities;
 
+import model.GameField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -118,13 +119,4 @@ public abstract class GameEntity {
         setRadius(newRadius);
     }
 
-    /**
-     * Unlink entity from game field.
-     * Method needed for correct GC.
-     */
-    public void removeFromField() {
-        this.gameField=null;
-        this.centerCoordinate=null;
-        this.color=null;
-    }
 }

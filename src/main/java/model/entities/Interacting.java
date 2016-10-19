@@ -1,4 +1,4 @@
-package model;
+package model.entities;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * Logic of interaction with other entity
  */
-public interface Interacting {
+interface Interacting {
     /**
      * Method defines logic of interaction between two entities
      * @param entity entity which interact

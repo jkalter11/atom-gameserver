@@ -1,4 +1,4 @@
-package model;
+package model.entities;
 
 import java.awt.geom.Point2D;
 
@@ -7,7 +7,7 @@ import java.awt.geom.Point2D;
  *
  * Physics of evenly moving objects
  */
-public interface EvenlyMoving {
+interface EvenlyMoving {
     /**
      * Move object to provided coordinate with constant velocity
      * @param dest target point

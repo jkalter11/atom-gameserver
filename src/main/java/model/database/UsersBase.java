@@ -1,4 +1,4 @@
-package controller;
+package model.database;
 
 import model.Player;
 import org.jetbrains.annotations.NotNull;

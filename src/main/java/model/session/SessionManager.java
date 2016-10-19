@@ -1,5 +1,7 @@
-package model;
+package model.session;
 
+import model.GameField;
+import model.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;

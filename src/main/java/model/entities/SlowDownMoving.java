@@ -1,4 +1,4 @@
-package model;
+package model.entities;
 
 import java.awt.geom.Point2D;
 

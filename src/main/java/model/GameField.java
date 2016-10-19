@@ -1,5 +1,9 @@
 package model;
 
+import model.entities.BushEntity;
+import model.entities.CellEntity;
+import model.entities.FoodEntity;
+import model.entities.GameEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;

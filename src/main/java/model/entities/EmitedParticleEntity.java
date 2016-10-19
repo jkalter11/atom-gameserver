@@ -1,5 +1,6 @@
-package model;
+package model.entities;
 
+import model.GameField;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

@@ -1,6 +1,6 @@
-package model;
+package model.database;
 
-import controller.UsersBase;
+import model.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
