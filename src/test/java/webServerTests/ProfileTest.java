@@ -7,19 +7,25 @@ import webserver.APIServlet;
 
 import java.util.UUID;
 
+import static webServerTests.WebServerTest.SERVICE_URL;
+import static webServerTests.WebServerTest.genRandomStr;
+
 /**
  * Created by xakep666 on 13.10.16.
  *
  * Unit tests for Profile API
  */
 public class ProfileTest {
-    private static final String SERVICE_URL = "http://localhost:"+ APIServlet.PORT+"/";
     @Test
     public void testSetNewName() {
-        APIServlet.base.register("user1","pass");
-        APIServlet.base.register("user2","pass");
-        UUID token1 = APIServlet.base.requestToken("user1","pass");
-        UUID token2 = APIServlet.base.requestToken("user2","pass");
+        String user1 = genRandomStr();
+        String user2 = genRandomStr();
+        String pass = genRandomStr();
+        APIServlet.base.register(user1,pass);
+        APIServlet.base.register(user2,pass);
+        APIServlet.base.requestToken(user1,pass);
+        UUID token1 = APIServlet.base.requestToken(user1,pass);
+        UUID token2 = APIServlet.base.requestToken(user2,pass);
 
         String requestUrl = SERVICE_URL + "profile/name";
         MediaType mType = MediaType.parse("raw");
@@ -44,15 +50,6 @@ public class ProfileTest {
                 .addHeader("content-type", "application/x-www-form-urlencoded")
                 .build();
         try {
-            new Thread(() -> {
-                try {
-                    APIServlet.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Assert.fail(e.toString());
-                }
-            }).start();
-            Thread.sleep(30000); //wait till server starts
             OkHttpClient httpClient = new OkHttpClient();
             Response resp = httpClient.newCall(request1).execute();
             Assert.assertTrue(resp.isSuccessful());
@@ -60,6 +57,7 @@ public class ProfileTest {
             Assert.assertEquals(resp.code(),javax.ws.rs.core.Response.Status.NOT_ACCEPTABLE.getStatusCode());
             resp = httpClient.newCall(request3).execute();
             Assert.assertEquals(UUID.fromString(resp.body().string()),token1);
+            resp.body().close();
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.toString());

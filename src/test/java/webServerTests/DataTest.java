@@ -7,18 +7,23 @@ import org.junit.Assert;
 import org.junit.Test;
 import webserver.APIServlet;
 
+import static webServerTests.WebServerTest.SERVICE_URL;
+import static webServerTests.WebServerTest.genRandomStr;
+
 /**
  * Created by xakep666 on 13.10.16.
  *
  * Unit tests for Data API
  */
 public class DataTest {
-    private static final String SERVICE_URL = "http://localhost:"+ APIServlet.PORT+"/";
     @Test
     public void getLoggedInTest() {
-        APIServlet.base.register("user1","pass");
-        APIServlet.base.register("user2","pass");
-        APIServlet.base.requestToken("user1","pass");
+        String user1 = genRandomStr();
+        String user2 = genRandomStr();
+        String pass = genRandomStr();
+        APIServlet.base.register(user1,pass);
+        APIServlet.base.register(user2,pass);
+        APIServlet.base.requestToken(user1,pass);
 
         String requestUrl = SERVICE_URL + "data/users";
         Request request =new Request.Builder()
@@ -27,19 +32,11 @@ public class DataTest {
                 .addHeader("content-type", "application/x-www-form-urlencoded")
                 .build();
         try {
-            new Thread(() -> {
-                try {
-                    APIServlet.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Assert.fail(e.toString());
-                }
-            }).start();
-            Thread.sleep(30000); //wait till server starts
             OkHttpClient httpClient = new OkHttpClient();
             Response resp = httpClient.newCall(request).execute();
             Assert.assertTrue(resp.isSuccessful());
-            Assert.assertEquals(resp.body().string(),"{\"users\":[\"user1\"]}");
+            Assert.assertEquals(resp.body().string(),"{\"users\":[\""+user1+"\"]}");
+            resp.body().close();
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.toString());

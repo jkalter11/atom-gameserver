@@ -7,17 +7,22 @@ import webserver.APIServlet;
 
 import java.util.UUID;
 
+import static webServerTests.WebServerTest.SERVICE_URL;
+import static webServerTests.WebServerTest.genRandomStr;
+
 /**
  * Created by xakep666 on 12.10.16.
  *
  * Unit tests for authentication
  */
 public class AuthTest {
-    private static final String SERVICE_URL = "http://localhost:"+APIServlet.PORT+"/";
+
     @Test
     public void testRegister() {
+        String user = genRandomStr();
+        String pass = genRandomStr();
         MediaType mType = MediaType.parse("raw");
-        RequestBody body = RequestBody.create(mType,"user=user&password=pass");
+        RequestBody body = RequestBody.create(mType,String.format("user=%s&password=%s",user,pass));
         String requestUrl = SERVICE_URL + "auth/register";
         Request request =new Request.Builder()
                 .url(requestUrl)
@@ -25,21 +30,14 @@ public class AuthTest {
                 .addHeader("content-type", "application/x-www-form-urlencoded")
                 .build();
         try {
-            new Thread(() -> {
-                try {
-                    APIServlet.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Assert.fail(e.toString());
-                }
-            }).start();
-            Thread.sleep(30000); //wait till server starts
             OkHttpClient httpClient = new OkHttpClient();
             Response resp = httpClient.newCall(request).execute();
+            resp.body().close();
             Assert.assertTrue(resp.isSuccessful());
             //try again, must get error
             resp = httpClient.newCall(request).execute();
             Assert.assertEquals(resp.code(),javax.ws.rs.core.Response.Status.NOT_ACCEPTABLE.getStatusCode());
+            resp.body().close();
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.toString());
@@ -48,9 +46,11 @@ public class AuthTest {
 
     @Test
     public void testAuth() {
-        APIServlet.base.register("user","pass");
+        String user = genRandomStr();
+        String pass = genRandomStr();
+        APIServlet.base.register(user,pass);
         MediaType mType = MediaType.parse("raw");
-        RequestBody body = RequestBody.create(mType,"user=user&password=pass");
+        RequestBody body = RequestBody.create(mType,String.format("user=%s&password=%s",user,pass));
         RequestBody body2 = RequestBody.create(mType, "user=a&password=b");
         String requestUrl = SERVICE_URL + "auth/login";
         Request request =new Request.Builder()
@@ -64,25 +64,21 @@ public class AuthTest {
                 .addHeader("content-type", "application/x-www-form-urlencoded")
                 .build();
         try {
-            new Thread(() -> {
-                try {
-                    APIServlet.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Assert.fail(e.toString());
-                }
-            }).start();
-            Thread.sleep(30000); //wait till server starts
             OkHttpClient httpClient = new OkHttpClient();
             Response resp = httpClient.newCall(request).execute();
             UUID token = UUID.fromString(resp.body().string());
             Assert.assertTrue(resp.isSuccessful());
+            resp.body().close();
             //try with not registered user
             resp = httpClient.newCall(request2).execute();
             Assert.assertEquals(resp.code(),javax.ws.rs.core.Response.Status.UNAUTHORIZED.getStatusCode());
+            resp.body().close();
             resp = httpClient.newCall(request).execute();
             Assert.assertEquals(token, UUID.fromString(resp.body().string()));
             Assert.assertTrue(APIServlet.base.isValidToken(token));
+            resp.body().close();
+            //remove from logged in
+            APIServlet.base.logout(token);
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.toString());
@@ -91,8 +87,10 @@ public class AuthTest {
 
     @Test
     public void testLogout() {
-        APIServlet.base.register("user","pass");
-        UUID token = APIServlet.base.requestToken("user","pass");
+        String user = genRandomStr();
+        String pass = genRandomStr();
+        APIServlet.base.register(user,pass);
+        UUID token = APIServlet.base.requestToken(user,pass);
         Assert.assertNotNull(token);
         MediaType mType = MediaType.parse("raw");
         RequestBody body = RequestBody.create(mType,"");
@@ -104,22 +102,15 @@ public class AuthTest {
                 .addHeader("Authorization", "Bearer "+token)
                 .build();
         try {
-            new Thread(() -> {
-                try {
-                    APIServlet.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Assert.fail(e.toString());
-                }
-            }).start();
-            Thread.sleep(30000); //wait till server starts
             OkHttpClient httpClient = new OkHttpClient();
             Response resp = httpClient.newCall(request).execute();
             Assert.assertTrue(resp.isSuccessful());
             Assert.assertFalse(APIServlet.base.isValidToken(token));
+            resp.body().close();
             //try again, must get error
             resp = httpClient.newCall(request).execute();
             Assert.assertEquals(resp.code(),javax.ws.rs.core.Response.Status.UNAUTHORIZED.getStatusCode());
+            resp.body().close();
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail(e.toString());
