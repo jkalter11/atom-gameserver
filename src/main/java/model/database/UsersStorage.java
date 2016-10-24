@@ -1,24 +1,16 @@
 package model.database;
 
-import model.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by xakep666 on 12.10.16.
  *
  * Provides an abstraction layer for databases
  */
-public interface UsersBase {
-    /**
-     * Token`s life time. When expired, must be requested again with requestToken()
-     */
-    Duration tokenLifeTime = Duration.ofHours(2);
-
+public interface UsersStorage {
     /**
      * Generates access token for username (authorization with password)
      * @param username user`s name
@@ -26,7 +18,7 @@ public interface UsersBase {
      * @return null if password is invalid or user not registered, access token otherwise
      */
     @Nullable
-    UUID requestToken(@NotNull String username, @NotNull String password);
+    Token requestToken(@NotNull String username, @NotNull String password);
 
     /**
      * Register user on server
@@ -50,14 +42,14 @@ public interface UsersBase {
      * Removes access token from valid tokens (logout user)
      * @param token token to remove
      */
-    void logout(@NotNull UUID token);
+    void logout(@NotNull Token token);
 
     /**
      * Checks if token is valid (exists and not expired)
      * @param token token to check
      * @return true if valid, false otherwise
      */
-    boolean isValidToken(@NotNull UUID token);
+    boolean isValidToken(@NotNull Token token);
 
     /**
      * Finds user and creates Player object by user name
@@ -65,7 +57,7 @@ public interface UsersBase {
      * @return Player object if found and token valid, null otherwise
      */
     @Nullable
-    Player getPlayerByName(@NotNull String name);
+    User getUserByName(@NotNull String name);
 
     /**
      * Finds token owner
@@ -73,7 +65,7 @@ public interface UsersBase {
      * @return username
      */
     @Nullable
-    String getTokenOwner(@NotNull UUID token);
+    String getTokenOwner(@NotNull Token token);
 
     /**
      * Finds logged in users (with valid tokens at now)
@@ -88,5 +80,5 @@ public interface UsersBase {
      * @param token token of user whose name will be changed
      * @return true if name was changed, false otherwise
      */
-    boolean setNewName(@NotNull String newName,@NotNull UUID token);
+    boolean setNewName(@NotNull String newName,@NotNull Token token);
 }

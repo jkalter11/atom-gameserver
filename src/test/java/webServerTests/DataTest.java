@@ -3,11 +3,10 @@ package webServerTests;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import model.database.Token;
 import org.junit.Assert;
 import org.junit.Test;
 import webserver.APIServlet;
-
-import java.util.UUID;
 
 /**
  * Created by xakep666 on 13.10.16.
@@ -22,7 +21,7 @@ public class DataTest extends WebServerTest{
         String pass = genRandomStr();
         APIServlet.base.register(user1,pass);
         APIServlet.base.register(user2,pass);
-        UUID token = APIServlet.base.requestToken(user1,pass);
+        Token token = APIServlet.base.requestToken(user1,pass);
 
         Assert.assertNotNull(token);
 

@@ -1,5 +1,6 @@
 package webserver.api;
 
+import model.database.Token;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
-import java.util.UUID;
 
 /**
  * Created by xakep666 on 13.10.16.
@@ -37,7 +37,7 @@ public class ProfileAPI {
     @Path("name")
     public Response setNewName(@FormParam("name") String newName,
                                @Context HttpHeaders headers) {
-        UUID token = AuthenticationFilter.getTokenFromHeaders(headers);
+        Token token = AuthenticationFilter.getTokenFromHeaders(headers);
         if (token==null) return Response.status(Response.Status.UNAUTHORIZED).build();
         log.info(String.format("User \"%s\" requested name change to \"%s\"",
                 APIServlet.base.getTokenOwner(token),newName));

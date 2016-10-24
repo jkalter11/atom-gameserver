@@ -1,5 +1,6 @@
 package webserver.auth;
 
+import model.database.Token;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +12,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Authorized
 @Provider
@@ -45,12 +45,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     }
 
     @Nullable
-    public static UUID getTokenFromHeaders(@NotNull HttpHeaders headers) {
+    public static Token getTokenFromHeaders(@NotNull HttpHeaders headers) {
         List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
-        try {
-            return UUID.fromString(authHeaders.get(0).substring("Bearer".length()).trim());
-        } catch (Exception e) {
-            return null;
-        }
+        return Token.parse(authHeaders.get(0).substring("Bearer".length()).trim());
     }
 }

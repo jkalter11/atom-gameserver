@@ -2,8 +2,9 @@ package webserver;
 
 import matchmaker.MatchMaker;
 import matchmaker.SinglePlayerMatchMaker;
-import model.database.InMemoryBase;
-import model.database.UsersBase;
+import model.database.InMemoryTokensStorage;
+import model.database.InMemoryUsersStorage;
+import model.database.UsersStorage;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -20,7 +21,7 @@ import java.util.List;
 public class APIServlet {
     public static final int PORT = 8080;
     private APIServlet() {}
-    public static UsersBase base = new InMemoryBase();
+    public static UsersStorage base = new InMemoryUsersStorage(new InMemoryTokensStorage());
     public static List<MatchMaker> matchMakers = new LinkedList<>();
     private static Server server;
     static {

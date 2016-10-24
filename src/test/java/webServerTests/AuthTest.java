@@ -1,11 +1,10 @@
 package webServerTests;
 
 import com.squareup.okhttp.*;
+import model.database.Token;
 import org.junit.Assert;
 import org.junit.Test;
 import webserver.APIServlet;
-
-import java.util.UUID;
 
 /**
  * Created by xakep666 on 12.10.16.
@@ -63,7 +62,7 @@ public class AuthTest extends WebServerTest {
         try {
             OkHttpClient httpClient = new OkHttpClient();
             Response resp = httpClient.newCall(request).execute();
-            UUID token = UUID.fromString(resp.body().string());
+            Token token = Token.parse(resp.body().string());
             Assert.assertTrue(resp.isSuccessful());
             resp.body().close();
             //try with not registered user
@@ -71,7 +70,8 @@ public class AuthTest extends WebServerTest {
             Assert.assertEquals(resp.code(),javax.ws.rs.core.Response.Status.UNAUTHORIZED.getStatusCode());
             resp.body().close();
             resp = httpClient.newCall(request).execute();
-            Assert.assertEquals(token, UUID.fromString(resp.body().string()));
+            Assert.assertNotNull(token);
+            Assert.assertEquals(token, Token.parse(resp.body().string()));
             Assert.assertTrue(APIServlet.base.isValidToken(token));
             resp.body().close();
             //remove from logged in
@@ -87,7 +87,7 @@ public class AuthTest extends WebServerTest {
         String user = genRandomStr();
         String pass = genRandomStr();
         APIServlet.base.register(user,pass);
-        UUID token = APIServlet.base.requestToken(user,pass);
+        Token token = APIServlet.base.requestToken(user,pass);
         Assert.assertNotNull(token);
         MediaType mType = MediaType.parse("raw");
         RequestBody body = RequestBody.create(mType,"");

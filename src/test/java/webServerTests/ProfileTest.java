@@ -1,11 +1,10 @@
 package webServerTests;
 
 import com.squareup.okhttp.*;
+import model.database.Token;
 import org.junit.Assert;
 import org.junit.Test;
 import webserver.APIServlet;
-
-import java.util.UUID;
 
 /**
  * Created by xakep666 on 13.10.16.
@@ -21,8 +20,8 @@ public class ProfileTest extends WebServerTest{
         APIServlet.base.register(user1,pass);
         APIServlet.base.register(user2,pass);
         APIServlet.base.requestToken(user1,pass);
-        UUID token1 = APIServlet.base.requestToken(user1,pass);
-        UUID token2 = APIServlet.base.requestToken(user2,pass);
+        Token token1 = APIServlet.base.requestToken(user1,pass);
+        Token token2 = APIServlet.base.requestToken(user2,pass);
         Assert.assertNotNull(token1);
         Assert.assertNotNull(token2);
 
@@ -42,7 +41,7 @@ public class ProfileTest extends WebServerTest{
                 .addHeader("Authorization", "Bearer "+token2)
                 .build();
         requestUrl = SERVICE_URL + "auth/login";
-        RequestBody body2 = RequestBody.create(mType,"user=user3&password=pass");
+        RequestBody body2 = RequestBody.create(mType,"user=user3&password="+pass);
         Request request3 =new Request.Builder()
                 .url(requestUrl)
                 .post(body2)
@@ -55,7 +54,7 @@ public class ProfileTest extends WebServerTest{
             resp = httpClient.newCall(request2).execute();
             Assert.assertEquals(resp.code(),javax.ws.rs.core.Response.Status.NOT_ACCEPTABLE.getStatusCode());
             resp = httpClient.newCall(request3).execute();
-            Assert.assertEquals(UUID.fromString(resp.body().string()),token1);
+            Assert.assertEquals(Token.parse(resp.body().string()),token1);
             resp.body().close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package webserver.auth;
 
+import model.database.Token;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import webserver.APIServlet;
@@ -8,7 +9,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
-import java.util.UUID;
 
 @Path("/auth")
 public class Authentication {
@@ -46,7 +46,7 @@ public class Authentication {
 
         try {
             // Authenticate the user using the credentials provided
-            UUID token = APIServlet.base.requestToken(user,password);
+            Token token = APIServlet.base.requestToken(user,password);
             if (token == null) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
@@ -62,7 +62,7 @@ public class Authentication {
     }
 
     static void validateToken(String rawToken) throws Exception {
-        UUID token = UUID.fromString(rawToken);
+        Token token = Token.parse(rawToken);
         if (!APIServlet.base.isValidToken(token)) {
             throw new Exception("Token validation exception");
         }
@@ -74,7 +74,7 @@ public class Authentication {
     @Path("logout")
     @Produces("text/plain")
     public Response logout(@Context HttpHeaders headers) {
-        UUID token = AuthenticationFilter.getTokenFromHeaders(headers);
+        Token token = AuthenticationFilter.getTokenFromHeaders(headers);
         if (token==null)
             return Response.status(Response.Status.UNAUTHORIZED).build();
         APIServlet.base.logout(token);
