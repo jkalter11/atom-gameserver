@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
-import java.util.UUID;
+import java.util.Random;
 
 /**
  * Created by xakep666 on 23.10.16.
@@ -13,16 +13,16 @@ import java.util.UUID;
  */
 public class Token {
     public static final Duration LIFE_TIME = Duration.ofHours(2);
-    @NotNull
-    private UUID token;
+
+    private long token;
     /**
      * Generates new random token
      */
     public Token() {
-        token = UUID.randomUUID();
+        token = new Random().nextLong();
     }
 
-    private Token(@NotNull UUID token) {
+    private Token(long token) {
         this.token = token;
     }
 
@@ -34,7 +34,7 @@ public class Token {
     @Nullable
     public static Token parse(@NotNull String rawToken) {
         try {
-            UUID token = UUID.fromString(rawToken);
+            long token = Long.parseLong(rawToken);
             return new Token(token);
         } catch (IllegalArgumentException e) {
             return null;
@@ -45,14 +45,14 @@ public class Token {
     @Override
     public boolean equals(Object o) {
         return (o==this) || (o instanceof Token)
-                && ((Token)o).token.equals(this.token);
+                && ((Token)o).token==this.token;
     }
 
     @Override
     public int hashCode() {
-        return token.hashCode();
+        return Long.valueOf(token).hashCode();
     }
 
     @Override
-    public String toString() {return token.toString();}
+    public String toString() {return Long.valueOf(token).toString();}
 }

@@ -9,8 +9,7 @@ import java.util.List;
 /**
  * Created by xakep666 on 24.10.16.
  *
- * Token database
- * Provides method for adding token to base, search user`s token, search token`s owner and remove invalid tokens
+ * Provides abstraction layer for tokens storage
  */
 public interface TokensStorage {
     /**
