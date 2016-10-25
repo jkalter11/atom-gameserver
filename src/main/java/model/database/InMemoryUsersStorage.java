@@ -30,6 +30,7 @@ public class InMemoryUsersStorage implements UsersStorage {
     }
 
     public boolean register(@NotNull String username, @NotNull String password){
+        if (username.equals("") || password.equals("")) return false;
         User u = new User(username,password);
         if (users.containsKey(username)) return false;
         users.put(username,u);
@@ -40,6 +41,7 @@ public class InMemoryUsersStorage implements UsersStorage {
     @Nullable
     @Override
     public Token requestToken(@NotNull String username, @NotNull String password) {
+        if (username.equals("") || password.equals("")) return null;
         if (!users.containsKey(username)) return null;
         User user=users.get(username);
         if (!user.validatePassword(password)) return null;

@@ -25,6 +25,10 @@ public class Authentication {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
+        if (user.equals("") || password.equals("")) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+
         if (!APIServlet.base.register(user,password)) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
@@ -43,7 +47,9 @@ public class Authentication {
         if (user == null || password == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-
+        if (user.equals("") || password.equals("")) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
         try {
             // Authenticate the user using the credentials provided
             Token token = APIServlet.base.requestToken(user,password);
