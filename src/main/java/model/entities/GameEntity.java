@@ -19,7 +19,7 @@ public abstract class GameEntity {
     private Color color;
     @NotNull
     private Point2D.Double centerCoordinate;
-    @NotNull
+
     private GameField gameField;
     private static Logger log = LogManager.getLogger(GameEntity.class);
 
@@ -122,4 +122,7 @@ public abstract class GameEntity {
             mass=newMass;
     }
 
+    public void destroy() {
+        gameField=null;
+    }
 }

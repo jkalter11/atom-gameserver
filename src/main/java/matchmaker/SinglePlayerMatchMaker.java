@@ -65,6 +65,9 @@ public class SinglePlayerMatchMaker implements MatchMaker {
   @Override
   public void leaveGame(@NotNull Player player) {
     activeGameSessions.forEach(session -> session.leave(player));
+    activeGameSessions.forEach(session -> {
+      if (session.players()==0) session.close();
+    });
     activeGameSessions.removeIf(session -> session.players()==0);
   }
 }

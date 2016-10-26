@@ -38,4 +38,9 @@ public interface GameSession {
    * @return session identifier
    */
   UUID getSessionID();
+
+    /**
+     * Close the session (called on removing from active session list)
+     */
+    void close();
 }

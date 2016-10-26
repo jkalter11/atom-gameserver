@@ -41,8 +41,13 @@ public class SessionManager implements GameSession{
     @Override
     public void leave(@NotNull Player player) {
         gameField.removePlayerCells(player);
-        players.removeIf(p -> p.equals(player));
+        players.removeIf(player::equals);
         log.info(String.format("Player \"%s\" left from session \"%s\"",player,this));
+    }
+
+    public void close() {
+        gameField.destroy();
+        log.debug(String.format("Closed session \"%s\"",this));
     }
 
     @Override

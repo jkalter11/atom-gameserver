@@ -1,9 +1,6 @@
 package model;
 
-import model.entities.BushEntity;
-import model.entities.CellEntity;
-import model.entities.FoodEntity;
-import model.entities.GameEntity;
+import model.entities.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -22,12 +20,14 @@ import java.util.List;
  * Provides a game field
  */
 public class GameField {
-    public static double SIZE_X = 500;
-    public static double SIZE_Y = 500;
+    public static final double SIZE_X = 500;
+    public static final double SIZE_Y = 500;
+    public static final int TICKS_PER_SECOND = 20;
     private static Logger log = LogManager.getLogger(GameField.class);
     private static List<Color> foodColors = new ArrayList<>();
     private static List<Color> playerColors = new ArrayList<>();
 
+    private Thread cycleThread;
 
     static {
         //food colors init ----
@@ -45,13 +45,22 @@ public class GameField {
         //---------------------
     }
 
-    private List<GameEntity> entities = new ArrayList<>();
+    @NotNull
+    private List<GameEntity> entities = new CopyOnWriteArrayList<>();
 
     public GameField() {
-
-        if (log.isDebugEnabled()) {
-            log.debug("Created game field \""+this+"\"");
-        }
+        log.debug(String.format("Created game field \"%s\"",this));
+        log.trace(String.format("Game field \"%s\" : staring game cycle",this));
+        cycleThread=new Thread(()->{
+            try {
+                while(true) {
+                    gameTick();
+                    Thread.sleep(1000/TICKS_PER_SECOND);
+                }
+            } catch (InterruptedException ignored) {
+            }
+        });
+        cycleThread.run();
     }
 
     /**
@@ -128,6 +137,7 @@ public class GameField {
         entities.forEach(e -> {
             if (e instanceof CellEntity && ((CellEntity)e).getOwner().equals(player)) {
                 Collections.copy(newCells,((CellEntity)e).split(numchild));
+                e.destroy();
             }
         });
         entities.removeIf(e -> (e instanceof CellEntity) && ((CellEntity)e).getOwner().equals(player));
@@ -169,7 +179,7 @@ public class GameField {
      * @return list of player controlled cells
      */
     public List<CellEntity> getPlayerCells() {
-        List<CellEntity> ret = new ArrayList<>();
+        List<CellEntity> ret = new ArrayList<>(entities.size());
         entities.forEach(e -> {
             if (e instanceof CellEntity)
                 ret.add((CellEntity)e);
@@ -181,7 +191,7 @@ public class GameField {
      * @return all non player controlled entities
      */
     public List<GameEntity> getNonPlayerEntities() {
-        List<GameEntity> ret = new ArrayList<>();
+        List<GameEntity> ret = new ArrayList<>(entities.size());
         entities.forEach(e -> {
             if (!(e instanceof CellEntity))
                 ret.add(e);
@@ -194,6 +204,9 @@ public class GameField {
      * @param entity object to remove
      */
     public void removeEntity(@NotNull GameEntity entity) {
+        entities.forEach(e-> {
+            if(e.equals(entity)) e.destroy();
+        });
         entities.removeIf(e -> e.equals(entity));
     }
 
@@ -202,6 +215,9 @@ public class GameField {
      * @param player player which cells will be removed
      */
     public void removePlayerCells(@NotNull Player player) {
+        entities.forEach(e-> {
+            if((e instanceof CellEntity) && ((CellEntity)e).getOwner().equals(player)) e.destroy();
+        });
         entities.removeIf(e -> (e instanceof CellEntity) && ((CellEntity)e).getOwner().equals(player));
     }
 
@@ -210,7 +226,24 @@ public class GameField {
      * @param e1 first entity
      * @param e2 second entity
      */
-    public void collide(@NotNull GameEntity e1, @NotNull GameEntity e2) {
+    private void collide(@NotNull GameEntity e1, @NotNull GameEntity e2) {
         //TODO: implement collision logic
+    }
+
+    private void handleMovements() {
+        entities.forEach(e->{
+            if(e instanceof Moving) ((Moving) e).tickMove();
+        });
+    }
+
+    private void gameTick() {
+        handleMovements();
+        //TODO: collision detection algorithm
+    }
+
+    public void destroy() {
+        cycleThread.interrupt();
+        entities.forEach(GameEntity::destroy);
+        log.debug(String.format("Game field \"%s\" destroyed",this));
     }
 }
