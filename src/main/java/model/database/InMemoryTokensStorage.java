@@ -24,8 +24,12 @@ public class InMemoryTokensStorage implements TokensStorage {
     @NotNull
     private Map<Token, Date> tokenTimed = new ConcurrentHashMap<>();
 
+    private Thread prThread;
+
     public InMemoryTokensStorage() {
+        prThread = new Thread(()->periodicRemover());
         log.info("In-memory tokens storage created");
+        prThread.run();
     }
 
     @Override
@@ -91,7 +95,6 @@ public class InMemoryTokensStorage implements TokensStorage {
         return (expDate!=null) && (new Date().before(expDate));
     }
 
-    @Override
     public void periodicRemover() {
         try {
             while(true) {
@@ -112,6 +115,15 @@ public class InMemoryTokensStorage implements TokensStorage {
             }
         } catch (InterruptedException ignored) {
 
+        }
+    }
+
+    @Override
+    public void finalize() {
+        try {
+            super.finalize();
+            prThread.interrupt();
+        } catch (Throwable ignored) {
         }
     }
 }

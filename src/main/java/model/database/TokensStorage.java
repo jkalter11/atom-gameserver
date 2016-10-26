@@ -67,10 +67,4 @@ public interface TokensStorage {
      * @param user user which token will be removed
      */
     void removeToken(@NotNull String user);
-
-    /**
-     * Method waits tokenRemovalInterval time and removes invalid tokens from base
-     * (infinite cycle, run in separate thread)
-     */
-    void periodicRemover();
 }
