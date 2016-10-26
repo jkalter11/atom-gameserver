@@ -45,4 +45,23 @@ public class ProfileAPI {
                 Response.ok("Username changed to "+newName).build() :
                 Response.status(Response.Status.NOT_ACCEPTABLE).build();
     }
+
+    @POST
+    @Authorized
+    @Path("changepass")
+    public Response changePassword(@Context HttpHeaders headers, @FormParam("newpass") String newpass) {
+        if (newpass.equals("")) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+        Token token = AuthenticationFilter.getTokenFromHeaders(headers);
+        if (token==null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        String username = APIServlet.base.getTokenOwner(token);
+        if (username==null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return APIServlet.base.changePassword(username,newpass) ?
+                Response.ok().build() : Response.status(Response.Status.NOT_FOUND).build();
+    }
 }
