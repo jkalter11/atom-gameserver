@@ -142,21 +142,11 @@ public class GameField {
      */
     public List<GameEntity> findNearby(GameEntity entity, double distance) {
         List<GameEntity> nearby = new ArrayList<>();
-        entities.sort((GameEntity e1,GameEntity e2) -> {
-            double lb1 = e1.getCenterCoordinate().getX()-e1.getRadius();
-            double lb2 = e2.getCenterCoordinate().getX()-e2.getRadius();
-            if (lb1<lb2) return -1;
-            if (lb1>lb2) return 1;
-            return 0;
-        });
         entities.forEach(e -> {
-            //do actual check if right border of given entity greater then left border of checking particle
-            if (entity.getCenterCoordinate().getX() + entity.getRadius() + distance>
-                    e.getCenterCoordinate().getX() - e.getRadius())
-                if (Math.abs(e.getCenterCoordinate().distance(entity.getCenterCoordinate()) -
-                        e.getRadius()+entity.getRadius()) <= distance) {
+            if (Math.abs(e.getCenterCoordinate().distance(entity.getCenterCoordinate()) -
+                e.getRadius()+entity.getRadius()) <= distance) {
                     nearby.add(e);
-                }
+            }
         });
         return nearby;
     }
@@ -170,9 +160,8 @@ public class GameField {
     public List<GameEntity> findNearby(Point2D.Double coordinate, double distance) {
         List<GameEntity> nearby = new LinkedList<>();
         entities.forEach(e -> {
-            if (coordinate.getX() + distance > e.getCenterCoordinate().getX() - e.getRadius())
-                if (Math.abs(e.getCenterCoordinate().distance(coordinate)-e.getRadius())<=distance)
-                    nearby.add(e);
+            if (Math.abs(e.getCenterCoordinate().distance(coordinate)-e.getRadius())<=distance)
+                nearby.add(e);
         });
         return nearby;
     }
@@ -214,5 +203,14 @@ public class GameField {
      */
     public void removePlayerCells(@NotNull Player player) {
         entities.removeIf(e -> (e instanceof CellEntity) && ((CellEntity)e).getOwner().equals(player));
+    }
+
+    /**
+     * Collide two entities
+     * @param e1 first entity
+     * @param e2 second entity
+     */
+    public void collide(@NotNull GameEntity e1, @NotNull GameEntity e2) {
+        //TODO: implement collision logic
     }
 }
