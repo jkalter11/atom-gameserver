@@ -28,7 +28,7 @@ public interface TokensStorage {
     /**
      * Finds user`s token
      * @param user user name which token will be searched
-     * @return user`s token if it`s found and, null otherwise
+     * @return user`s token if it`s found and it is valid, null otherwise
      */
     @Nullable
     Token getUserToken(@NotNull String user);

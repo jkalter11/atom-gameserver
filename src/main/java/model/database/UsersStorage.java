@@ -31,12 +31,10 @@ public interface UsersStorage {
     /**
      * Change user password (token must belong to user and user must submit his password)
      * @param username user who wants change his pass
-     * @param oldpwd user`s old password
      * @param newpwd user`s new password
      * @return true if password changed, false otherwise
      */
-    boolean changePassword(@NotNull String username, @NotNull String oldpwd,
-                            @NotNull String newpwd);
+    boolean changePassword(@NotNull String username, @NotNull String newpwd);
 
     /**
      * Removes access token from valid tokens (logout user)

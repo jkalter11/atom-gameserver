@@ -60,11 +60,9 @@ public class InMemoryUsersStorage implements UsersStorage {
     }
 
     @Override
-    public boolean changePassword(@NotNull String username, @NotNull String oldpwd,
-                            @NotNull String newpwd) {
+    public boolean changePassword(@NotNull String username,@NotNull String newpwd) {
         if (!users.containsKey(username)) return false;
         User u = users.get(username);
-        if (!u.validatePassword(oldpwd)) return false;
         u.updatePassword(newpwd);
         return true;
     }
