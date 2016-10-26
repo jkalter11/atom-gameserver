@@ -69,7 +69,7 @@ public class Authentication {
 
     static void validateToken(String rawToken) throws Exception {
         Token token = Token.parse(rawToken);
-        if (!APIServlet.base.isValidToken(token)) {
+        if (token==null || !APIServlet.base.isValidToken(token)) {
             throw new Exception("Token validation exception");
         }
         log.info("Correct token from '{}'", APIServlet.base.getTokenOwner(token));
