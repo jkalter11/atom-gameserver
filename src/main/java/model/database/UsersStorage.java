@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by xakep666 on 12.10.16.
  *
- * Provides an abstraction layer for databases
+ * Provides an abstraction layer for databases of {@link User}
  */
 public interface UsersStorage {
     /**

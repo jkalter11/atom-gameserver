@@ -10,6 +10,7 @@ import java.util.List;
  * Created by xakep666 on 24.10.16.
  *
  * Provides abstraction layer for tokens storage
+ * Issues, stores, validates {@link Token}
  */
 public interface TokensStorage {
     /**
