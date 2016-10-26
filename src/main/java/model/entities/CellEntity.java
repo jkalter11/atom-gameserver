@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,10 +14,8 @@ import java.util.List;
  *
  * Describes player controlled cell behavior
  */
-public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMoving, Interacting, Splittable {
+public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMoving, Splittable {
     private Player owner;
-    public static double minRadius = 10;
-    public static double maxRadius = Math.min(GameField.SIZE_X,GameField.SIZE_Y)/2-10;
 
     public CellEntity(@NotNull Point2D.Double centerCoordinate, double radius,
                       @NotNull Color color,@NotNull Player owner, @NotNull GameField gameField) {
@@ -29,29 +27,37 @@ public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMovi
         return owner;
     }
 
-    public double getMinRadius() {
-        return minRadius;
+    /**
+     * Consume other entity to increase mass
+     * @param entity entity to consume
+     */
+    public void eat(@NotNull GameEntity entity) {
+        setMass(getMass()+entity.getMass());
     }
 
-    public double getMaxRadius() {
-        return maxRadius;
-    }
-
-    public void interact(@NotNull GameEntity entity) {
-        //TODO: implement interaction logic
-    }
-
+    @Override
     public void evenlyMoveTo(@NotNull Point2D.Double dest) {
         //TODO: implement movement logic
     }
 
+    @Override
     public void slowDownMoveTo(@NotNull Point2D.Double dest) {
         //TODO: implement movement logic
     }
 
+    @NotNull
+    @Override
     public List<CellEntity> split(int children) {
-        //TODO: implement splitting logic
-        return Collections.EMPTY_LIST;
+        List<CellEntity> ret = new ArrayList<>(children);
+        double newMass = getMass()/(double)children;
+        if (newMass<MIN_MASS) return ret;
+        /*for(int i=0;i<children;i++) {
+            Point2D.Double newCenter = new Point2D.Double(
+
+            );
+            ret.add(new CellEntity());
+        }*/
+        return ret;
     }
 
 }

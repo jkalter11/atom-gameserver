@@ -5,31 +5,39 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by xakep666 on 05.10.16.
  *
  * Describes green bush behavior
  */
-public class BushEntity extends GameEntity implements Splittable {
-    public static final double minRadius = 10;
-    public static final double maxRadius = 20;
-
-    public BushEntity(@NotNull Point2D.Double centerCoordinate, double radius, @NotNull GameField gameField) {
-        super(radius, Color.GREEN, centerCoordinate,gameField);
+public class BushEntity extends GameEntity implements Splittable,SlowDownMoving {
+    public static final double MAX_MASS = GameEntity.MIN_MASS*4;
+    static {
+        assert(MAX_MASS<=GameEntity.MAX_MASS);
     }
 
-    public double getMinRadius() {
-        return minRadius;
+    public BushEntity(@NotNull Point2D.Double centerCoordinate, double mass, @NotNull GameField gameField) {
+        super(mass, Color.GREEN, centerCoordinate,gameField);
     }
 
-    public double getMaxRadius() {
-        return maxRadius;
-    }
-
-    public java.util.List<CellEntity> split(int children) {
+    @Override
+    @NotNull
+    public List<BushEntity> split(int children) {
+        List<BushEntity> ret = new ArrayList<>(children);
         //TODO: implement splitting logic
-        return Collections.EMPTY_LIST;
+        return ret;
     }
+
+    @Override
+    public void slowDownMoveTo(@NotNull Point2D.Double distance) {
+
+    }
+
+    @Override
+    public double getMinMass() {return MIN_MASS;}
+    @Override
+    public double getMaxMass() {return MAX_MASS;}
 }

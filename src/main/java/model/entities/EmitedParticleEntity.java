@@ -11,29 +11,26 @@ import java.awt.geom.Point2D;
  *
  * Describes small particles emited by player controlled cell
  */
-public class EmitedParticleEntity extends GameEntity implements SlowDownMoving, Interacting {
-    private static double radius = 10;
+public class EmitedParticleEntity extends GameEntity implements SlowDownMoving {
+    public static final double MAX_MASS = 2*MIN_MASS;
+    static {
+        assert(MAX_MASS<=GameEntity.MAX_MASS);
+    }
 
     public EmitedParticleEntity(@NotNull Point2D.Double centerCoordinate,
-                                double radius,
+                                double mass,
                                 @NotNull Color color,
                                 @NotNull GameField gameField) {
-        super(radius, color, centerCoordinate, gameField);
+        super(mass, color, centerCoordinate, gameField);
     }
 
-    public double getMinRadius() {
-        return radius;
-    }
-
-    public double getMaxRadius() {
-        return radius;
-    }
-
+    @Override
     public void slowDownMoveTo(@NotNull Point2D.Double dest) {
         //TODO: implement movement logic
     }
 
-    public void interact(@NotNull GameEntity entity) {
-        //TODO: implement interraction logic
-    }
+    @Override
+    public double getMinMass() {return MIN_MASS;}
+    @Override
+    public double getMaxMass() {return MAX_MASS;}
 }

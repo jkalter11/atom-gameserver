@@ -14,7 +14,7 @@ import java.awt.geom.Point2D;
  * Superclass for all game entities
  */
 public abstract class GameEntity {
-    private double radius;
+    private double mass;
     @NotNull
     private Color color;
     @NotNull
@@ -23,35 +23,49 @@ public abstract class GameEntity {
     private GameField gameField;
     private static Logger log = LogManager.getLogger(GameEntity.class);
 
-    private static double density = 2;
+
+    private static final double density = 2;
+
+    public static double massToRadius(double mass) {
+        return Math.sqrt(mass/density/Math.PI);
+    }
+    public static double radiusToMass(double radius) {
+        return density*Math.pow(radius,2)*Math.PI;
+    }
+    public static final double MIN_MASS = 10;
+    public static final double MIN_RADIUS = massToRadius(MIN_MASS);
+    public static final double MAX_RADIUS = Math.min(GameField.SIZE_X,GameField.SIZE_Y);
+    public static final double MAX_MASS = radiusToMass(MAX_RADIUS);
+
+    public double getMinMass() {return MIN_MASS;}
+    public double getMinRadius() {return MIN_RADIUS;}
+    public double getMaxRadius() {return MAX_RADIUS;}
+    public double getMaxMass() {return MAX_MASS;}
 
     /**
      * Create new entity
-     * @param radius radius of entity
+     * @param mass mass of entity
      * @param color color of entity
      * @param centerCoordinate coordinates on game field
      */
-    public GameEntity(double radius,
+    public GameEntity(double mass,
                       @NotNull Color color,
                       @NotNull Point2D.Double centerCoordinate,
                       @NotNull GameField gameField) {
-        this.radius=radius;
+        this.mass=mass;
         this.color=color;
         this.centerCoordinate=centerCoordinate;
         this.gameField=gameField;
-
-        if (log.isDebugEnabled()) {
-            log.debug(String.format("Created entity \"%s\" on game field \"%s\" with parameters: (%s) ",
-                    this.getClass().getName(),
-                    gameField,
-                    this));
-        }
+        log.debug(String.format("Created entity \"%s\" on game field \"%s\" with parameters: (%s) ",
+            this.getClass().getName(),
+            gameField,
+            this));
     }
 
     @Override
     public String toString() {
-        return String.format("radius: %f, color: %s, centerCoordinate: \"%s\" ",
-                radius,color,centerCoordinate);
+        return String.format("mass: %f, color: %s, centerCoordinate: \"%s\" ",
+                mass,color,centerCoordinate);
     }
 
     @NotNull
@@ -60,7 +74,7 @@ public abstract class GameEntity {
     }
 
     public double getRadius() {
-        return radius;
+        return massToRadius(mass);
     }
 
     @NotNull
@@ -74,23 +88,13 @@ public abstract class GameEntity {
      * @param centerCoordinate new center coordinate
      */
     protected void setCenterCoordinate(@NotNull Point2D.Double centerCoordinate) {
-        boolean rightOfLeftBorder = centerCoordinate.getX()>=radius;
-        boolean lowerOfTopBorder = centerCoordinate.getY()<=GameField.SIZE_Y-radius;
-        boolean leftOfRightBorder = centerCoordinate.getX()<GameField.SIZE_X-radius;
-        boolean upperOfBottomBorder = centerCoordinate.getY()>=radius;
+        boolean rightOfLeftBorder = centerCoordinate.getX()>=getRadius();
+        boolean lowerOfTopBorder = centerCoordinate.getY()<=GameField.SIZE_Y-getRadius();
+        boolean leftOfRightBorder = centerCoordinate.getX()<GameField.SIZE_X-getRadius();
+        boolean upperOfBottomBorder = centerCoordinate.getY()>=getRadius();
         if (rightOfLeftBorder && leftOfRightBorder && lowerOfTopBorder && upperOfBottomBorder)
             this.centerCoordinate=centerCoordinate;
     }
-
-    /**
-     * @return minimal radius for entity
-     */
-    public abstract double getMinRadius();
-
-    /**
-     * @return maximal radius for entity
-     */
-    public abstract double getMaxRadius();
 
     /**
      * Sets up new radius.
@@ -99,24 +103,23 @@ public abstract class GameEntity {
      */
     protected void setRadius(double radius) {
         if (radius>=getMinRadius() && radius<=getMaxRadius())
-            this.radius=radius;
+            mass=radiusToMass(radius);
     }
 
     /**
-     * Calculates and returns mass of entity.
      * @return mass of entity
      */
     public double getMass() {
-        return Math.PI*radius*radius*density;
+        return mass;
     }
 
     /**
-     * Calculates and sets radius from new mass
+     * Set up new mass of entity, does nothing if not between MIN_MASS and MAX_MASS
      * @param newMass a new mass value
      */
     public void setMass(double newMass) {
-        double newRadius = Math.sqrt(newMass/density/Math.PI);
-        setRadius(newRadius);
+        if (newMass<=getMaxMass() && newMass>=getMinMass())
+            mass=newMass;
     }
 
 }

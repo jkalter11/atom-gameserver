@@ -85,7 +85,7 @@ public class GameField {
      * @param max maximal radius
      * @return generated radius
      */
-    private static double generateRadius(double min, double max) {
+    private static double generateMass(double min, double max) {
         return Math.random()*(max-min)+min;
     }
 
@@ -93,30 +93,29 @@ public class GameField {
      * Spawns a green bush on free area
      */
     public void spawnBush() {
-        double radius = generateRadius(BushEntity.minRadius,BushEntity.maxRadius);
-        Point2D.Double center = genCenterCoordinate(radius);
-        entities.add(new BushEntity(center,radius,this));
+        double mass = generateMass(BushEntity.MIN_MASS,BushEntity.MAX_MASS);
+        Point2D.Double center = genCenterCoordinate(mass);
+        entities.add(new BushEntity(center,mass,this));
     }
 
     /**
      * Spawns food particle on free area
      */
     public void spawnFood() {
-        double radius = FoodEntity.radius;
-        Point2D.Double center = genCenterCoordinate(radius);
+        Point2D.Double center = genCenterCoordinate(GameEntity.massToRadius(FoodEntity.MIN_MASS));
         Color color = generateColor(foodColors);
-        entities.add(new FoodEntity(center,radius,color,this));
+        entities.add(new FoodEntity(center,color,this));
     }
 
     /**
      * Spawns player controlled cell on free area
-     * @param player player, who will controll cell
+     * @param player player, who will control cell
      */
     public void spawnPlayerCell(@NotNull Player player) {
-        double radius = CellEntity.minRadius;
-        Point2D.Double center = genCenterCoordinate(radius);
+        double mass = CellEntity.MIN_MASS;
+        Point2D.Double center = genCenterCoordinate(CellEntity.radiusToMass(mass));
         Color color = generateColor(playerColors);
-        entities.add(new CellEntity(center,radius,color,player,this));
+        entities.add(new CellEntity(center,mass,color,player,this));
     }
 
     /**
