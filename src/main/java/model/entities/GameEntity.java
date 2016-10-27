@@ -1,5 +1,6 @@
 package model.entities;
 
+import model.GameConstants;
 import model.GameField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,17 +25,17 @@ public abstract class GameEntity {
     private static Logger log = LogManager.getLogger(GameEntity.class);
 
 
-    private static final double density = 2;
+    private static final double DENSITY = 2;
 
     public static double massToRadius(double mass) {
-        return Math.sqrt(mass/density/Math.PI);
+        return Math.sqrt(mass/ DENSITY /Math.PI);
     }
     public static double radiusToMass(double radius) {
-        return density*Math.pow(radius,2)*Math.PI;
+        return DENSITY *Math.pow(radius,2)*Math.PI;
     }
     public static final double MIN_MASS = 10;
     public static final double MIN_RADIUS = massToRadius(MIN_MASS);
-    public static final double MAX_RADIUS = Math.min(GameField.SIZE_X,GameField.SIZE_Y);
+    public static final double MAX_RADIUS = Math.min(GameConstants.SIZE_X, GameConstants.SIZE_Y);
     public static final double MAX_MASS = radiusToMass(MAX_RADIUS);
 
     public double getMinMass() {return MIN_MASS;}
@@ -89,8 +90,8 @@ public abstract class GameEntity {
      */
     protected void setCenterCoordinate(@NotNull Point2D.Double centerCoordinate) {
         boolean rightOfLeftBorder = centerCoordinate.getX()>=getRadius();
-        boolean lowerOfTopBorder = centerCoordinate.getY()<=GameField.SIZE_Y-getRadius();
-        boolean leftOfRightBorder = centerCoordinate.getX()<GameField.SIZE_X-getRadius();
+        boolean lowerOfTopBorder = centerCoordinate.getY()<= GameConstants.SIZE_Y-getRadius();
+        boolean leftOfRightBorder = centerCoordinate.getX()< GameConstants.SIZE_X-getRadius();
         boolean upperOfBottomBorder = centerCoordinate.getY()>=getRadius();
         if (rightOfLeftBorder && leftOfRightBorder && lowerOfTopBorder && upperOfBottomBorder)
             this.centerCoordinate=centerCoordinate;

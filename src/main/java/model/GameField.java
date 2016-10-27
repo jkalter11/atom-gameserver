@@ -20,9 +20,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Provides a game field
  */
 public class GameField {
-    public static final double SIZE_X = 500;
-    public static final double SIZE_Y = 500;
-    public static final int TICKS_PER_SECOND = 20;
     private static Logger log = LogManager.getLogger(GameField.class);
     private static List<Color> foodColors = new ArrayList<>();
     private static List<Color> playerColors = new ArrayList<>();
@@ -55,7 +52,7 @@ public class GameField {
             try {
                 while(true) {
                     gameTick();
-                    Thread.sleep(1000/TICKS_PER_SECOND);
+                    Thread.sleep(1000/ GameConstants.TICKS_PER_SECOND);
                 }
             } catch (InterruptedException ignored) {
             }
@@ -81,8 +78,8 @@ public class GameField {
     private Point2D.Double genCenterCoordinate(double radius) {
         Point2D.Double center;
         do {
-            double x = Math.random()*SIZE_X;
-            double y = Math.random()*SIZE_Y;
+            double x = Math.random()* GameConstants.SIZE_X;
+            double y = Math.random()* GameConstants.SIZE_Y;
             center = new Point2D.Double(x,y);
         } while (findNearby(center,10).size()!=0);
         return center;
@@ -227,7 +224,57 @@ public class GameField {
      * @param e2 second entity
      */
     private void collide(@NotNull GameEntity e1, @NotNull GameEntity e2) {
-        //TODO: implement collision logic
+        if (e1 instanceof CellEntity) {
+            if (e2 instanceof BushEntity) {
+                if (e1.getMass()>e2.getMass()) {
+                    //split
+                    List<CellEntity> newCells =
+                            ((CellEntity) e1).split((int)(Math.random()* GameConstants.MAX_RAND_SPLIT_CHILDREN)+2);
+                    entities.forEach(e->{
+                        if (e.equals(e1)) e1.destroy();
+                    });
+                    entities.remove(e1);
+                    entities.addAll(newCells);
+                    //TODO: accelerate to random direction
+                }
+            }
+            if (e2 instanceof FoodEntity || e2 instanceof EmitedParticleEntity) {
+                ((CellEntity) e1).eat(e2);
+                entities.remove(e2);
+            }
+            if (e2 instanceof CellEntity) {
+                //TODO: Maybe compare with accuracy |a-b|<delta
+                if (e1.getMass()>e2.getMass()) {
+                    ((CellEntity) e1).eat(e2);
+                    entities.remove(e2);
+                } else if (e1.getMass()<e2.getMass()) {
+                    ((CellEntity) e2).eat(e1);
+                    entities.remove(e1);
+                }
+            }
+        } else if (e2 instanceof CellEntity) {
+            collide(e2,e1);
+        } else if (e1 instanceof BushEntity) {
+            if (e2 instanceof EmitedParticleEntity) {
+                ((BushEntity) e1).eat(e2);
+                entities.forEach(e->{
+                    if (e.equals(e2)) e2.destroy();
+                });
+                entities.remove(e2);
+                if (e1.getMass()>e1.getMaxMass()) {
+                    List<BushEntity> newBushes =
+                            ((BushEntity) e1).split((int)(Math.random()* GameConstants.MAX_RAND_SPLIT_CHILDREN)+2);
+                    entities.forEach(e->{
+                        if (e.equals(e1)) e1.destroy();
+                    });
+                    entities.remove(e1);
+                    entities.addAll(newBushes);
+                    //TODO: accelerate to random direction
+                }
+            }
+        } else if (e2 instanceof BushEntity) {
+            collide(e2,e1);
+        }
     }
 
     private void handleMovements() {
@@ -236,8 +283,18 @@ public class GameField {
         });
     }
 
+    private void randomSpawnNPE() {
+        //TODO: implement random non-player entities spawn
+    }
+
+    private void randomDeSpawnNPE() {
+        //TODO: implement random non-player entities despawn
+    }
+
     private void gameTick() {
         handleMovements();
+        randomSpawnNPE();
+        randomDeSpawnNPE();
         //TODO: collision detection algorithm
     }
 

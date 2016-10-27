@@ -14,7 +14,7 @@ import java.util.List;
  *
  * Describes player controlled cell behavior
  */
-public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMoving, Splittable {
+public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMoving, Splittable, Eating {
     private Player owner;
 
     public CellEntity(@NotNull Point2D.Double centerCoordinate, double radius,
@@ -27,10 +27,7 @@ public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMovi
         return owner;
     }
 
-    /**
-     * Consume other entity to increase mass
-     * @param entity entity to consume
-     */
+    @Override
     public void eat(@NotNull GameEntity entity) {
         setMass(getMass()+entity.getMass());
     }
@@ -60,4 +57,8 @@ public class CellEntity extends GameEntity implements SlowDownMoving, EvenlyMovi
         return ret;
     }
 
+    @Override
+    public void tickMove() {
+
+    }
 }
